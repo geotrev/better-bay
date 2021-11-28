@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Super Bay
 // @namespace    https://github.com/geotrev/super-bay
-// @version      1.0.0
+// @version      1.0.1
 // @description  Automate chores on eBay.
 // @author       geotrev
 // @match        https://www.ebay.com/*
@@ -11,6 +11,8 @@
 
 ;(function () {
   "use strict"
+
+  let RUNNING_PROCESS = false
 
   const FeedbackConfig = {
     DEBUG: false,
@@ -44,6 +46,8 @@
       return
     }
 
+    RUNNING_PROCESS = true
+
     log("Filling feedback...")
 
     let PURCHASE_FB_COUNT = 0
@@ -52,6 +56,7 @@
     const length = items.length
 
     if (length === 0) {
+      RUNNING_PROCESS = false
       return log("No feedback, exiting.")
     }
 
@@ -172,6 +177,8 @@
         }.`
       )
     }
+
+    RUNNING_PROCESS = false
   }
 
   /**
@@ -179,9 +186,7 @@
    */
 
   function subscribeFeedback() {
-    window.addEventListener("DOMContentLoaded", function () {
-      window.addEventListener("keydown", applyFeedback)
-    })
+    document.addEventListener("keydown", applyFeedback)
   }
 
   /**
