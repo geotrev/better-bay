@@ -1,6 +1,6 @@
 # Super Bay
 
-A tampermonkey script to automate chores in ebay.
+Tampermonkey scripts to automate chores on ebay.
 
 ## Page Features
 
