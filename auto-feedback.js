@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Super Bay - Auto Feedback
 // @namespace    https://github.com/geotrev/super-bay
-// @version      1.0.4
+// @version      1.0.5
 // @description  Automate feedback on eBay with Alt+Shift+F
 // @author       geotrev
 // @match        https://www.ebay.com/fdbk/leave_feedback*
