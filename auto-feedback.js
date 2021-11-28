@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Super Bay - Auto Feedback
 // @namespace    https://github.com/geotrev/super-bay
-// @version      1.0.6
+// @version      1.0.7
 // @description  Automate feedback on eBay with Alt+Shift+F
 // @author       geotrev
 // @match        https://www.ebay.com/fdbk/leave_feedback*
@@ -12,7 +12,7 @@
 ;(function () {
   "use strict"
 
-  class SuperEbayNotify {
+  class SuperBayNotify {
     constructor() {
       const notifyWrapperTemp = document.createElement("div")
       const notifyElTemp = document.createElement("div")
@@ -42,7 +42,7 @@
     }
   }
 
-  window.superEbayNotify = new SuperEbayNotify()
+  window.superBayNotify = new SuperBayNotify()
 })()
 ;(function () {
   "use strict"
@@ -80,8 +80,6 @@
 
     RUNNING_PROCESS = true
 
-    window.superEbayNotify.trigger({ content: "Filling feedback..." })
-
     let PURCHASE_FB_COUNT = 0
     let SALE_FB_COUNT = 0
     const items = document.querySelectorAll(".single-feedback-template")
@@ -89,10 +87,12 @@
 
     if (length === 0) {
       RUNNING_PROCESS = false
-      return window.superEbayNotify.trigger({
+      return window.superBayNotify.trigger({
         content: "No feedback, exiting.",
       })
     }
+
+    window.superBayNotify.trigger({ content: "Filling feedback..." })
 
     function enableSubmit(target) {
       target.dispatchEvent(new Event("blur"))
@@ -197,7 +197,7 @@
     }
 
     if (PURCHASE_FB_COUNT > 0) {
-      window.superEbayNotify.trigger({
+      window.superBayNotify.trigger({
         content: `Feedback completed for ${PURCHASE_FB_COUNT} ${pluralize(
           "seller",
           PURCHASE_FB_COUNT
@@ -206,7 +206,7 @@
     }
 
     if (SALE_FB_COUNT > 0) {
-      window.superEbayNotify.trigger({
+      window.superBayNotify.trigger({
         content: `Feedback completed for ${SALE_FB_COUNT} ${pluralize(
           "buyer",
           SALE_FB_COUNT
@@ -230,7 +230,7 @@
    */
 
   function init() {
-    window.superEbayNotify.trigger({
+    window.superBayNotify.trigger({
       content: "Plugin activated! Press Alt+Shift+F to fill out feedback.",
     })
     subscribeFeedback()
