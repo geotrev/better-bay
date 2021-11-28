@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         SuperBay - Auto Feedback
+// @name         Super Bay - Auto Feedback
 // @namespace    https://github.com/geotrev/super-bay
-// @version      1.0.3
+// @version      1.0.4
 // @description  Automate feedback on eBay with Alt+Shift+F
 // @author       geotrev
 // @match        https://www.ebay.com/fdbk/leave_feedback*
@@ -9,6 +9,41 @@
 // @grant        none
 // ==/UserScript==
 
+;(function () {
+  "use strict"
+
+  class SuperEbayNotify {
+    constructor() {
+      const notifyWrapperTemp = document.createElement("div")
+      const notifyElTemp = document.createElement("div")
+
+      notifyWrapperTemp.innerHTML =
+        '<div style="position: fixed;top: 0px;right: 0px;bottom: unset;left: 0px;z-index: 4000;padding: 48px 16px;pointer-events: none;display: flex;flex-direction: column;align-items: flex-end;"></div>'
+      notifyElTemp.innerHTML =
+        '<section role="region" style="pointer-events: auto;flex-wrap: wrap;background-color: #333;margin: 0px;color: #dedede;padding: 12px 16px;border-radius: 8px;max-width: 280px;box-shadow: 0 5px 10px rgba(0,0,0,0.5);margin-bottom: 12px;"><h3 style="margin-bottom: 8px;font-weight: bold;font-size: 12px;">[Super Bay]</h3><p style="font-size: 16px;line-height: 22px;" data-notify-content></p></section>'
+
+      this.notifyWrapper = notifyWrapperTemp.firstElementChild
+      this.notifyEl = notifyElTemp.firstElementChild
+
+      document.body.appendChild(this.notifyWrapper)
+      this.destroy = this.destroy.bind(this)
+    }
+
+    create({ content }) {
+      const notify = this.notifyEl.cloneNode(true)
+      notify.querySelector("p").innerText = content
+
+      this.notifyWrapper.appendChild(notify)
+      setTimeout(this.destroy, 2000)
+    }
+
+    destroy() {
+      this.notifyWrapper.removeChild(this.notifyWrapper.firstElementChild)
+    }
+  }
+
+  window.superEbayNotify = new SuperEbayNotify()
+})()
 ;(function () {
   "use strict"
 
@@ -24,10 +59,6 @@
   /**
    * HELPERS
    */
-
-  function log(msg, type = "info") {
-    console[type](`[SUPER-BAY]: ${msg}`)
-  }
 
   function pluralize(word, count) {
     return count > 1 ? word + "s" : word
@@ -49,7 +80,7 @@
 
     RUNNING_PROCESS = true
 
-    log("Filling feedback...")
+    window.superEbayNotify({ content: "Filling feedback..." })
 
     let PURCHASE_FB_COUNT = 0
     let SALE_FB_COUNT = 0
@@ -58,7 +89,7 @@
 
     if (length === 0) {
       RUNNING_PROCESS = false
-      return log("No feedback, exiting.")
+      return window.superEbayNotify({ content: "No feedback, exiting." })
     }
 
     function enableSubmit(target) {
@@ -164,21 +195,21 @@
     }
 
     if (PURCHASE_FB_COUNT > 0) {
-      log(
-        `Feedback completed for ${PURCHASE_FB_COUNT} ${pluralize(
+      window.superEbayNotify({
+        content: `Feedback completed for ${PURCHASE_FB_COUNT} ${pluralize(
           "seller",
           PURCHASE_FB_COUNT
-        )}.`
-      )
+        )}.`,
+      })
     }
 
     if (SALE_FB_COUNT > 0) {
-      log(
-        `Feedback completed for ${SALE_FB_COUNT} ${pluralize(
+      window.superEbayNotify({
+        content: `Feedback completed for ${SALE_FB_COUNT} ${pluralize(
           "buyer",
           SALE_FB_COUNT
-        )}.`
-      )
+        )}.`,
+      })
     }
 
     RUNNING_PROCESS = false
@@ -197,7 +228,9 @@
    */
 
   function init() {
-    log("Plugin activated!")
+    window.superEbayNotify({
+      content: "Plugin activated! Press Alt+Shift+F to fill out feedback.",
+    })
     subscribeFeedback()
   }
 
