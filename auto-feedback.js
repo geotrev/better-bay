@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name         Super Bay
+// @name         SuperBay - Auto Feedback
 // @namespace    https://github.com/geotrev/super-bay
-// @version      1.0.2
-// @description  Automate chores on eBay.
+// @version      1.0.3
+// @description  Automate feedback on eBay with Alt+Shift+F
 // @author       geotrev
-// @match        https://www.ebay.com/*
+// @match        https://www.ebay.com/fdbk/leave_feedback*
 // @icon         https://i.imgur.com/sTWhpsO.png
 // @grant        none
 // ==/UserScript==
