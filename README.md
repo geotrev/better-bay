@@ -4,14 +4,16 @@ A tampermonkey script to automate chores in ebay.
 
 Currently, this script adds the following key bindings:
 
-- `ALT+SHIFT+F`: When on the feedback page (`/fdbk/leave_feedback`), auto-fills feedback with five star ratings and generic positive messages.
+- `ebay.com/fdbk/leave_feedback`
+  - `ALT+SHIFT+F`: Auto-fills **all pending feedback** with five star ratings and generic positive messages.
 
 ## Install
 
 1. Install [tampermonkey for Chrome](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo).
-2. From the extension icon in the top right of the browser, select `Create a new script...`.
-3. In the resulting page, copy and paste the contents of `super-bay.js`.
-4. Go to `File` > `Save`.
+2. Copy and paste contents from [here](https://raw.githubusercontent.com/geotrev/super-bay/main/super-bay.js).
+3. From the extension icon in the top right of the browser, select `Create a new script...`.
+4. In the resulting page, delete the default code/content and paste the previously copied script into the text editor.
+5. Go to `File` > `Save`.
 
 ### Additional Options
 
@@ -25,4 +27,4 @@ You can configure the script to automatically update if desired:
 6. Go to `Settings` on the top right of the tampermonkey dashboard.
 7. Under `Externals`, change `Update interval` to `Every Day`.
 
-Now changes from the above github url will automatically reflect in your tampermonkey script instance within 24 hours.
+Now you'll receive the updated script each day.

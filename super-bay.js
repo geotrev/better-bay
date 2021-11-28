@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Super Bay
 // @namespace    https://github.com/geotrev/super-bay
-// @version      1.0.1
+// @version      1.0.2
 // @description  Automate chores on eBay.
 // @author       geotrev
 // @match        https://www.ebay.com/*
@@ -21,19 +21,20 @@
       "Easy purchase + item arrived as described. Thanks.",
   }
 
+  /**
+   * HELPERS
+   */
+
   function log(msg, type = "info") {
     console[type](`[SUPER-BAY]: ${msg}`)
   }
 
+  function pluralize(word, count) {
+    return count > 1 ? word + "s" : word
+  }
+
   /**
-   * When viewing the below link in your ebay account, press ctrl/cmd+alt+F
-   * and this script will automatically fill in all sales/purchase feedback.
-   *
-   * --> https://www.ebay.com/fdbk/leave_feedback
-   *
-   * You may need to refresh and do this multiple times to get all your sales/purchases
-   * reviewed. Alternatively, you can scroll down through the page until all your
-   * sales/purchases are visible, then run the script.
+   * EVENT BINDINGS
    */
 
   function applyFeedback(event) {
@@ -164,17 +165,19 @@
 
     if (PURCHASE_FB_COUNT > 0) {
       log(
-        `Feedback completed for ${PURCHASE_FB_COUNT} seller${
-          PURCHASE_FB_COUNT > 1 ? "s" : ""
-        }.`
+        `Feedback completed for ${PURCHASE_FB_COUNT} ${pluralize(
+          "seller",
+          PURCHASE_FB_COUNT
+        )}.`
       )
     }
 
     if (SALE_FB_COUNT > 0) {
       log(
-        `Feedback completed for ${SALE_FB_COUNT} buyer${
-          SALE_FB_COUNT > 1 ? "s" : ""
-        }.`
+        `Feedback completed for ${SALE_FB_COUNT} ${pluralize(
+          "buyer",
+          SALE_FB_COUNT
+        )}.`
       )
     }
 
