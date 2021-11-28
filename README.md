@@ -1,6 +1,6 @@
 # Super Bay
 
-A tampermonkey script to automate chores in ebay.
+Tampermonkey scripts to automate chores on ebay.
 
 ## Page Features
 
@@ -36,3 +36,7 @@ You can do this to get new features/bug fixes if desired. If not, skip these ste
 7. Under `Externals`, change `Update interval` to `Every Day`.
 
 Now you'll receive the updated script each day.
+
+## Beta updates
+
+If you want more frequent updates, replace `main` in the source URL with `develop`.
