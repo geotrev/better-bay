@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Super Bay - Auto Feedback
 // @namespace    https://github.com/geotrev/super-bay
-// @version      1.0.5
+// @version      1.0.6
 // @description  Automate feedback on eBay with Alt+Shift+F
 // @author       geotrev
 // @match        https://www.ebay.com/fdbk/leave_feedback*
@@ -29,7 +29,7 @@
       this.destroy = this.destroy.bind(this)
     }
 
-    create({ content }) {
+    trigger({ content }) {
       const notify = this.notifyEl.cloneNode(true)
       notify.querySelector("p").innerText = content
 
@@ -80,7 +80,7 @@
 
     RUNNING_PROCESS = true
 
-    window.superEbayNotify({ content: "Filling feedback..." })
+    window.superEbayNotify.trigger({ content: "Filling feedback..." })
 
     let PURCHASE_FB_COUNT = 0
     let SALE_FB_COUNT = 0
@@ -89,7 +89,9 @@
 
     if (length === 0) {
       RUNNING_PROCESS = false
-      return window.superEbayNotify({ content: "No feedback, exiting." })
+      return window.superEbayNotify.trigger({
+        content: "No feedback, exiting.",
+      })
     }
 
     function enableSubmit(target) {
@@ -195,7 +197,7 @@
     }
 
     if (PURCHASE_FB_COUNT > 0) {
-      window.superEbayNotify({
+      window.superEbayNotify.trigger({
         content: `Feedback completed for ${PURCHASE_FB_COUNT} ${pluralize(
           "seller",
           PURCHASE_FB_COUNT
@@ -204,7 +206,7 @@
     }
 
     if (SALE_FB_COUNT > 0) {
-      window.superEbayNotify({
+      window.superEbayNotify.trigger({
         content: `Feedback completed for ${SALE_FB_COUNT} ${pluralize(
           "buyer",
           SALE_FB_COUNT
@@ -228,7 +230,7 @@
    */
 
   function init() {
-    window.superEbayNotify({
+    window.superEbayNotify.trigger({
       content: "Plugin activated! Press Alt+Shift+F to fill out feedback.",
     })
     subscribeFeedback()
