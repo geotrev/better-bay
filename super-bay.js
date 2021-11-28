@@ -73,7 +73,7 @@
          */
 
         const onTimeInput = item.querySelector(
-          `input[value="2"][name^="ON_TIME_DELIVERY"]`
+          'input[value="2"][name^="ON_TIME_DELIVERY"]'
         )
         if (onTimeInput) onTimeInput.click()
 
@@ -82,7 +82,7 @@
          */
 
         const reviewTypeInput = item.querySelector(
-          `input[value="POSITIVE"][name^="OVERALL_EXPERIENCE"]`
+          'input[value="POSITIVE"][name^="OVERALL_EXPERIENCE"]'
         )
         if (reviewTypeInput) reviewTypeInput.click()
 
@@ -92,25 +92,25 @@
 
         // item description
         const itemDescStar = item.querySelector(
-          `input[value="5"][name^="DSR_ITEM_AS_DESCRIBED"]`
+          'input[value="5"][name^="DSR_ITEM_AS_DESCRIBED"]'
         )
         if (itemDescStar) itemDescStar.click()
 
         // shipping costs
         const shipCostStar = item.querySelector(
-          `input[value="5"][name^="DSR_SHIPPING_CHARGES"]`
+          'input[value="5"][name^="DSR_SHIPPING_CHARGES"]'
         )
         if (shipCostStar) shipCostStar.click()
 
         // shipping time
         const shipTimeStar = item.querySelector(
-          `input[value="5"][name^="DSR_SHIPPING_TIME"]`
+          'input[value="5"][name^="DSR_SHIPPING_TIME"]'
         )
         if (shipTimeStar) shipTimeStar.click()
 
         // seller communication
         const sellCommStar = item.querySelector(
-          `input[value="5"][name^="DSR_COMMUNICATION"]`
+          'input[value="5"][name^="DSR_COMMUNICATION"]'
         )
         if (sellCommStar) sellCommStar.click()
 
@@ -119,7 +119,7 @@
          */
 
         const overallExpEl = item.querySelector(
-          "textarea[name='OVERALL_EXPERIENCE_COMMENT']"
+          'textarea[name="OVERALL_EXPERIENCE_COMMENT"]'
         )
         if (overallExpEl) {
           overallExpEl.value = FeedbackConfig.PURCHASE_FEEDBACK_TEXT
@@ -133,7 +133,7 @@
          */
 
         const reviewTypeInput = item.querySelector(
-          `input[value="POSITIVE"][name^="OVERALL_EXPERIENCE"]`
+          'input[value="POSITIVE"][name^="OVERALL_EXPERIENCE"]'
         )
         if (reviewTypeInput) reviewTypeInput.click()
 
@@ -142,7 +142,7 @@
          */
 
         const overallExpEl = item.querySelector(
-          "input[name='OVERALL_EXPERIENCE_COMMENT']"
+          'input[name="OVERALL_EXPERIENCE_COMMENT"]'
         )
         if (overallExpEl) {
           overallExpEl.value = FeedbackConfig.SALE_FEEDBACK_TEXT
