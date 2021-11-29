@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Super Bay - Auto Feedback
+// @name         Super Bay - Feedback
 // @version      1.0.7
 // @description  Automate feedback on eBay with Alt+Shift+F
 // @author       geotrev
