@@ -1,0 +1,6 @@
+{
+  "version": "1.0.7",
+  "author": "geotrev",
+  "run-at": "document-idle",
+  "grant": "none"
+}
