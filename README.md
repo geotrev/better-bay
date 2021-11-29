@@ -10,6 +10,6 @@ Add the [tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dh
 
 ### Feedback Shortcuts
 
-| Key Command                                | Page                   | Description                                    |
-| ------------------------------------------ | ---------------------- | ---------------------------------------------- |
-| <kbd>⌥</kbd>/<kbd>alt</kbd> + <kbd>F</kbd> | `/fdbk/leave_feedback` | Automatically fill out visible feedback items. |
+| Key Command                                                   | Page                   | Description                                    |
+| ------------------------------------------------------------- | ---------------------- | ---------------------------------------------- |
+| <kbd>⌥</kbd>/<kbd>alt</kbd> + <kbd>shift</kbd> + <kbd>F</kbd> | `/fdbk/leave_feedback` | Automatically fill out visible feedback items. |
