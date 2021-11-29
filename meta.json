@@ -1,6 +1,7 @@
 {
-  "version": "1.0.7",
+  "version": "1.0.8",
   "author": "geotrev",
+  "namespace": "https://github.com/geotrev/super-bay",
   "run-at": "document-idle",
   "grant": "none"
 }

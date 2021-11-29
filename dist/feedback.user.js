@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        Super Bay - Feedback
 // @description Automate feedback on ebay
-// @namespace   npmjs.com/rollup-plugin-userscript-metablock
-// @version     1.0.7
+// @namespace   https://github.com/geotrev/super-bay
+// @version     1.0.8
 // @author      geotrev
 // @run-at      document-idle
 // @match       https://www.ebay.com/fdbk/leave_feedback*
