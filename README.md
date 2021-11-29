@@ -18,17 +18,9 @@ Bracketed number corresponds to a script file under the [Install](#install) sect
 
 ## Install
 
-**Scripts:**
+First add [tampermonkey to Chrome](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo).
 
-- [1] `https://raw.githubusercontent.com/geotrev/super-bay/main/auto-feedback.js`
-
-**Steps:**
-
-1. Install [tampermonkey for Chrome](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo).
-2. Copy and paste contents from your script of choice (see above).
-3. From the extension icon in the top right of the browser, select `Create a new script...`.
-4. In the resulting page, delete the default code/content and paste the previously copied script into the text editor.
-5. Go to `File` > `Save`.
+Then [install Super Bay – Automatic Feedback](https://github.com/geotrev/super-bay/raw/main/auto-feedback.user.js).
 
 ### Get updates
 
