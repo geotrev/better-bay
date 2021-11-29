@@ -7,8 +7,8 @@
 // @run-at       document-idle
 // @icon         https://i.imgur.com/sTWhpsO.png
 // @grant        none
-// @downloadURL  https://raw.githubusercontent.com/geotrev/super-bay/main/auto-feedback.user.js
-// @updateURL    https://raw.githubusercontent.com/geotrev/super-bay/main/auto-feedback.user.js
+// @downloadURL  https://github.com/geotrev/super-bay/raw/main/auto-feedback.user.js
+// @updateURL    https://github.com/geotrev/super-bay/raw/main/auto-feedback.user.js
 // ==/UserScript==
 
 ;(function () {
