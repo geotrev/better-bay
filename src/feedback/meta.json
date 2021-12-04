@@ -1,7 +1,5 @@
 {
   "name": "Super Bay - Feedback",
   "description": "Automate feedback on ebay",
-  "match": "https://www.ebay.com/fdbk/leave_feedback*",
-  "downloadURL": "https://github.com/geotrev/super-bay/raw/main/dist/feedback.user.js",
-  "updateURL": "https://github.com/geotrev/super-bay/raw/main/dist/feedback.user.js"
+  "match": "https://www.ebay.com/fdbk/leave_feedback*"
 }
