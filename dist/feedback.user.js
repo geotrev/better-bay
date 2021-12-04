@@ -3,7 +3,7 @@
 // @description Automate feedback on ebay
 // @namespace   https://github.com/geotrev/super-bay
 // @version     1.0.9
-// @author      geotrev
+// @author      George Treviranus
 // @run-at      document-idle
 // @match       https://www.ebay.com/fdbk/leave_feedback*
 // @downloadURL https://github.com/geotrev/super-bay/raw/main/dist/feedback.user.js

@@ -1,6 +1,6 @@
 {
   "version": "1.0.9",
-  "author": "geotrev",
+  "author": "George Treviranus",
   "namespace": "https://github.com/geotrev/super-bay",
   "run-at": "document-idle",
   "grant": "none"
