@@ -3,8 +3,13 @@ import { terser } from "rollup-plugin-terser"
 import glob from "glob"
 import path from "path"
 import fs from "fs"
+import pkg from "./package.json"
 
 const scriptSources = glob.sync(path.resolve("src/!(utils)"))
+
+function getScriptUrl(name) {
+  return `${pkg.repository.url.slice(4, -4)}/raw/main/dist/${name}.user.js`
+}
 
 /**
  * Generates an array of rollup configs with a shallow iterationthrough src/
@@ -16,13 +21,16 @@ const scriptSources = glob.sync(path.resolve("src/!(utils)"))
 
 export default scriptSources.map((sourcePath) => {
   const pathParts = sourcePath.split("/")
-  const file = path.resolve(`dist/${pathParts[pathParts.length - 1]}.user.js`)
+  const name = pathParts[pathParts.length - 1]
+  const file = path.resolve(`dist/${name}.user.js`)
   const input = `${sourcePath}/index.js`
 
   const metaPath = `${sourcePath}/meta.json`
-  const override = fs.existsSync(metaPath)
+  const metaOverride = fs.existsSync(metaPath)
     ? JSON.parse(fs.readFileSync(metaPath, "utf8"))
     : undefined
+
+  const scriptUrl = getScriptUrl(name)
 
   return {
     input,
@@ -32,7 +40,14 @@ export default scriptSources.map((sourcePath) => {
       generatedCode: { compact: true },
     },
     plugins: [
-      metablock({ file: path.resolve("./meta.json"), override }),
+      metablock({
+        file: path.resolve("./meta.json"),
+        override: {
+          ...metaOverride,
+          downloadURL: scriptUrl,
+          updateURL: scriptUrl,
+        },
+      }),
       terser({
         mangle: true,
         format: {
