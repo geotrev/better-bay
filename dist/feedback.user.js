@@ -2,7 +2,7 @@
 // @name        Super Bay - Feedback
 // @description Automate feedback on ebay
 // @namespace   https://github.com/geotrev/super-bay
-// @version     1.0.8
+// @version     1.0.9
 // @author      geotrev
 // @run-at      document-idle
 // @match       https://www.ebay.com/fdbk/leave_feedback*
