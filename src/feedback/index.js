@@ -30,6 +30,10 @@ function applyFeedback(event) {
     return
   }
 
+  if (event.ctrlKey) {
+    FeedbackConfig.DEBUG = true
+  }
+
   RUNNING_PROCESS = true
 
   let PURCHASE_FB_COUNT = 0
