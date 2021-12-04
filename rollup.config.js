@@ -1,39 +1,50 @@
 import metablock from "rollup-plugin-userscript-metablock"
 import { terser } from "rollup-plugin-terser"
+import glob from "glob"
+import path from "path"
+import fs from "fs"
 
-export default {
-  input: "src/feedback/index.js",
-  output: {
-    file: "dist/feedback.user.js",
-    format: "iife",
-    generatedCode: {
-      compact: true,
+const scriptSources = glob.sync(path.resolve("src/!(utils)"))
+
+/**
+ * Generates an array of rollup configs with a shallow iterationthrough src/
+ *
+ * - config.input is always src\/*\/index.js
+ * - config.output.file is always dist/<src_dir_name>.user.js
+ * - override to meta block is derived from src\/*\/meta.json
+ */
+
+export default scriptSources.map((sourcePath) => {
+  const pathParts = sourcePath.split("/")
+  const file = path.resolve(`dist/${pathParts[pathParts.length - 1]}.user.js`)
+  const input = `${sourcePath}/index.js`
+
+  const metaPath = `${sourcePath}/meta.json`
+  const override = fs.existsSync(metaPath)
+    ? JSON.parse(fs.readFileSync(metaPath, "utf8"))
+    : undefined
+
+  return {
+    input,
+    output: {
+      file,
+      format: "iife",
+      generatedCode: { compact: true },
     },
-  },
-  plugins: [
-    metablock({
-      file: "./meta.json",
-      override: {
-        name: "Super Bay - Feedback",
-        description: "Automate feedback on ebay",
-        match: "https://www.ebay.com/fdbk/leave_feedback*",
-        downloadURL:
-          "https://github.com/geotrev/super-bay/raw/main/feedback.user.js",
-        updateURL:
-          "https://github.com/geotrev/super-bay/raw/main/feedback.user.js",
-      },
-    }),
-    terser({
-      mangle: true,
-      format: {
-        comments: function (_, comment) {
-          var text = comment.value
-          var type = comment.type
-          if (type == "comment1") {
-            return /@[a-zA-Z]|UserScript/i.test(text)
-          }
+    plugins: [
+      metablock({ file: path.resolve("./meta.json"), override }),
+      terser({
+        mangle: true,
+        format: {
+          comments: function (_, comment) {
+            var text = comment.value
+            var type = comment.type
+            if (type == "comment1") {
+              return /@[a-zA-Z]|UserScript/i.test(text)
+            }
+          },
         },
-      },
-    }),
-  ],
-}
+      }),
+    ],
+  }
+})
