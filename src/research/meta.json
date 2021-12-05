@@ -1,0 +1,5 @@
+{
+  "name": "Super Bay - Research",
+  "description": "Better controls in seller hub research",
+  "match": "https://www.ebay.com/sh/research*"
+}

@@ -172,15 +172,6 @@ function applyFeedback(event) {
 
   RUNNING_PROCESS = false
 }
-
-/**
- * Listener functions
- */
-
-function subscribeFeedback() {
-  document.addEventListener("keydown", applyFeedback)
-}
-
 /**
  * Initialize script
  */
@@ -189,7 +180,7 @@ function init() {
   notify.trigger({
     content: "Plugin activated! Press Alt+Shift+F to fill out feedback.",
   })
-  subscribeFeedback()
+  document.addEventListener("keydown", applyFeedback)
 }
 
 init()
