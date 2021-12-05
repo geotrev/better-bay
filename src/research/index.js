@@ -4,13 +4,26 @@ const Selectors = {
   soldResultTable: ".sold-result-table",
   searchSubmit: ".search-input-panel__research-button",
   search: ".research-container input",
+  tableRow: ".research-table-row",
+  tableRowAnchor: ".research-table-row__link-row-anchor",
+}
+
+const Colors = {
+  noRowAnchorBackgroundColor: "#EFEFEF",
 }
 
 function upgradeSoldTable() {
   notify.trigger({
-    content:
-      "Table upgraded. To exclude items, click checkboxes and press Alt+Shift+E.",
+    content: "Table upgraded. Removed listings have a darker background color.",
   })
+
+  const table = document.querySelector(Selectors.soldResultTable)
+  const tableRows = table.querySelectorAll(Selectors.tableRow)
+
+  for (const row of tableRows) {
+    const anchor = row.querySelector(Selectors.tableRowAnchor)
+    if (!anchor) row.style.backgroundColor = Colors.noRowAnchorBackgroundColor
+  }
 }
 
 async function tryUpgradeSoldTable() {
@@ -19,9 +32,7 @@ async function tryUpgradeSoldTable() {
     "Results table took too long to load. Try again."
   )
 
-  if (table) {
-    upgradeSoldTable()
-  }
+  if (table) upgradeSoldTable()
 }
 
 function handleClick(event) {
@@ -32,7 +43,7 @@ function handleKeydown(event) {
   if (event.key === "Enter") tryUpgradeSoldTable()
 }
 
-async function init() {
+function init() {
   notify.trigger({
     content: "Plugin activated!",
   })
@@ -46,12 +57,7 @@ async function init() {
   searchBtn.addEventListener("keydown", handleKeydown)
 
   // Check if a table existed on load. If so, upgrade it.
-  const table = await load(
-    () => document.querySelector(Selectors.soldResultTable),
-    "Search to get started."
-  )
-
-  if (table) tryUpgradeSoldTable()
+  tryUpgradeSoldTable()
 }
 
 init()
