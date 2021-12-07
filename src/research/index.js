@@ -22,7 +22,10 @@ function upgradeSoldTable() {
 
   for (const row of tableRows) {
     const anchor = row.querySelector(Selectors.tableRowAnchor)
-    if (!anchor) row.style.backgroundColor = Colors.noRowAnchorBackgroundColor
+
+    if (!anchor) {
+      row.style.backgroundColor = Colors.noRowAnchorBackgroundColor
+    }
   }
 }
 
