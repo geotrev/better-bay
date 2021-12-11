@@ -61,26 +61,32 @@ function handleKeydown(event) {
 
 // init the plugin
 
-function init() {
+async function init() {
   notify.trigger({
     content: "Plugin activated!",
   })
-
-  // register click targets that refresh the table
-
-  for (const sel of RefreshTargets) {
-    sel.addEventListener("click", handleClick)
-  }
-  for (const groupSel of GroupedRefreshTargets) {
-    document
-      .querySelectorAll(groupSel)
-      .forEach((sel) => sel.addEventListener("click", handleClick))
-  }
 
   // handle enter of search input
 
   const searchBtn = document.querySelector(Selectors.SEARCH)
   searchBtn.addEventListener("keydown", handleKeydown)
+
+  // register click targets that refresh the table
+
+  for (const sel of RefreshTargets) {
+    const el = await load(() => document.querySelector(sel))
+
+    if (el) {
+      el.addEventListener("click", handleClick)
+    }
+  }
+  for (const groupSel of GroupedRefreshTargets) {
+    const els = await load(() => document.querySelectorAll(groupSel))
+
+    if (els && els.length) {
+      els.forEach((el) => el.addEventListener("click", handleClick))
+    }
+  }
 
   // Check if a table exists on load. If so, upgrade it.
 

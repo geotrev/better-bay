@@ -6,7 +6,7 @@
   "scripts": {
     "build": "rollup -c",
     "pre-commit:build": "npm run build && git add dist",
-    "prettier:check": "prettier --config .prettierrc --check \"src/**/*.{js,scss,css}\"",
+    "prettier:check": "prettier --config .prettierrc.json --check \"src/**/*.{js,scss,css}\"",
     "prepare": "husky install"
   },
   "repository": {
