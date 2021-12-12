@@ -21,3 +21,10 @@ export const GroupedDynamicTargetSelectors = [
 export const Colors = {
   NO_ANCHOR_BG_COLOR: "#EFEFEF",
 }
+
+export const Messages = {
+  PLUGIN_ACTIVATED: "Plugin activated!",
+  TABLE_UPGRADED:
+    "Table upgraded. Removed listings have a darker background color.",
+  TABLE_UPGRADE_FAILED: "Results table took too long to load. Try again.",
+}

@@ -4,13 +4,18 @@ import {
   DynamicTargetSelectors,
   GroupedDynamicTargetSelectors,
   Colors,
+  Messages,
 } from "./enums.js"
+
+/**
+ * SCRIPT
+ */
 
 let dynamicTargets = []
 
 function upgradeSoldTable() {
   notify.trigger({
-    content: "Table upgraded. Removed listings have a darker background color.",
+    content: Messages.TABLE_UPGRADED,
   })
 
   const table = document.querySelector(StaticTargetSelectors.SOLD_RESULT_TABLE)
@@ -25,40 +30,36 @@ function upgradeSoldTable() {
   }
 }
 
-// checks if the table exists before upgrading it.
-
 async function tryUpgradeSoldTable() {
   const table = await load(
     () => document.querySelector(StaticTargetSelectors.SOLD_RESULT_TABLE),
-    "Results table took too long to load. Try again."
+    Messages.TABLE_UPGRADE_FAILED
   )
 
   if (table) upgradeSoldTable()
 }
 
-// event listeners
-
-/**
- * If the target isn't disabled, wait for a new
- * table state and upgrade the table + filter UI
- */
 function handleClick(event) {
   if (!event.target.disabled) {
-    setTimeout(async () => {
-      await tryUpgradeSoldTable()
-
-      dynamicTargets.forEach((target) =>
-        target.removeEventListener("click", handleClick)
-      )
-      dynamicTargets = []
-
-      addDynamicTargetListeners()
-    }, 2000)
+    setTimeout(refreshDynamicContent, 2000)
   }
 }
 
 function handleKeydown(event) {
-  if (event.key === "Enter") tryUpgradeSoldTable()
+  if (event.key === "Enter") {
+    setTimeout(refreshDynamicContent, 2000)
+  }
+}
+
+async function refreshDynamicContent() {
+  await tryUpgradeSoldTable()
+
+  dynamicTargets.forEach((target) =>
+    target.removeEventListener("click", handleClick)
+  )
+  dynamicTargets = []
+
+  addDynamicTargetListeners()
 }
 
 async function addDynamicTargetListeners() {
@@ -84,11 +85,9 @@ async function addDynamicTargetListeners() {
   }
 }
 
-// init the plugin
-
 async function init() {
   notify.trigger({
-    content: "Plugin activated!",
+    content: Messages.PLUGIN_ACTIVATED,
   })
 
   // setup static update triggers
@@ -105,7 +104,7 @@ async function init() {
   searchDropdown.addEventListener("click", handleClick)
   searchInput.addEventListener("keydown", handleKeydown)
 
-  // setup dynamic update triggers
+  // upgrade table + setup dynamic update triggers
 
   await tryUpgradeSoldTable()
   await addDynamicTargetListeners()

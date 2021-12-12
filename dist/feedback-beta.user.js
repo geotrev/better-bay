@@ -2,7 +2,7 @@
 // @name        Super Bay - Feedback
 // @description Automate feedback on ebay
 // @namespace   https://github.com/geotrev/super-bay
-// @version     1.0.16-beta.0
+// @version     1.0.16-beta.1
 // @author      George Treviranus
 // @run-at      document-idle
 // @match       https://www.ebay.com/fdbk/leave_feedback*
@@ -45,13 +45,33 @@
 
   const notify = new Notify();
 
-  let RUNNING_PROCESS = false;
-
-  const FeedbackConfig = {
+  const PluginConfig = {
     DEBUG: false,
     SALE_FEEDBACK_TEXT: "Great buyer + fast payment. Thanks.",
     PURCHASE_FEEDBACK_TEXT: "Easy purchase + item arrived as described. Thanks.",
   };
+
+  const StaticTargetSelectors = {
+    REVIEW_ITEMS: ".single-feedback-template",
+    ON_TIME_DEL: 'input[value="2"][name^="ON_TIME_DELIVERY"]',
+    OVERALL_EXP: 'input[value="POSITIVE"][name^="OVERALL_EXPERIENCE"]',
+    ITEM_AS_DESC: 'input[value="5"][name^="DSR_ITEM_AS_DESCRIBED"]',
+    SHIP_CHARGES: 'input[value="5"][name^="DSR_SHIPPING_CHARGES"]',
+    SHIP_TIME: 'input[value="5"][name^="DSR_SHIPPING_TIME"]',
+    SELLER_COMMS: 'input[value="5"][name^="DSR_COMMUNICATION"]',
+    EXP_COMMENT_TA: 'textarea[name="OVERALL_EXPERIENCE_COMMENT"]',
+    EXP_COMMENT_IN: 'input[name="OVERALL_EXPERIENCE_COMMENT"]',
+    SUBMIT_BTN: 'button[id^="submitFeedbackBtn-"]',
+  };
+
+  const Messages = {
+    NO_FEEDBACK: "No feedback, exiting.",
+    FILLING_FEEDBACK: "Filling feedback...",
+    HOW_TO:
+      "Plugin activated! Press Alt+Shift+F to fill and submit all feedback, or Ctrl+Alt+Shift+F to fill (but not submit) feedback.",
+  };
+
+  let RUNNING_PROCESS = false;
 
   /**
    * HELPERS
@@ -62,7 +82,7 @@
   }
 
   /**
-   * EVENT BINDINGS
+   * SCRIPT
    */
 
   function applyFeedback(event) {
@@ -76,22 +96,22 @@
       return
     }
 
-    if (event.ctrlKey) FeedbackConfig.DEBUG = true;
+    if (event.ctrlKey) PluginConfig.DEBUG = true;
     RUNNING_PROCESS = true;
 
     let PURCHASE_FB_COUNT = 0;
     let SALE_FB_COUNT = 0;
-    const items = document.querySelectorAll(".single-feedback-template");
+    const items = document.querySelectorAll(StaticTargetSelectors.REVIEW_ITEMS);
     const length = items.length;
 
     if (length === 0) {
       RUNNING_PROCESS = false;
       return notify.trigger({
-        content: "No feedback, exiting.",
+        content: Messages.NO_FEEDBACK,
       })
     }
 
-    notify.trigger({ content: "Filling feedback..." });
+    notify.trigger({ content: Messages.FILLING_FEEDBACK });
 
     function enableSubmit(target) {
       target.dispatchEvent(new Event("blur"));
@@ -105,9 +125,7 @@
          * Apply on time delivery
          */
 
-        const onTimeInput = item.querySelector(
-          'input[value="2"][name^="ON_TIME_DELIVERY"]'
-        );
+        const onTimeInput = item.querySelector(StaticTargetSelectors.ON_TIME_DEL);
         if (onTimeInput) onTimeInput.click();
 
         /**
@@ -115,7 +133,7 @@
          */
 
         const reviewTypeInput = item.querySelector(
-          'input[value="POSITIVE"][name^="OVERALL_EXPERIENCE"]'
+          StaticTargetSelectors.OVERALL_EXP
         );
         if (reviewTypeInput) reviewTypeInput.click();
 
@@ -125,25 +143,23 @@
 
         // item description
         const itemDescStar = item.querySelector(
-          'input[value="5"][name^="DSR_ITEM_AS_DESCRIBED"]'
+          StaticTargetSelectors.ITEM_AS_DESC
         );
         if (itemDescStar) itemDescStar.click();
 
         // shipping costs
         const shipCostStar = item.querySelector(
-          'input[value="5"][name^="DSR_SHIPPING_CHARGES"]'
+          StaticTargetSelectors.SHIP_CHARGES
         );
         if (shipCostStar) shipCostStar.click();
 
         // shipping time
-        const shipTimeStar = item.querySelector(
-          'input[value="5"][name^="DSR_SHIPPING_TIME"]'
-        );
+        const shipTimeStar = item.querySelector(StaticTargetSelectors.SHIP_TIME);
         if (shipTimeStar) shipTimeStar.click();
 
         // seller communication
         const sellCommStar = item.querySelector(
-          'input[value="5"][name^="DSR_COMMUNICATION"]'
+          StaticTargetSelectors.SELLER_COMMS
         );
         if (sellCommStar) sellCommStar.click();
 
@@ -152,10 +168,10 @@
          */
 
         const overallExpEl = item.querySelector(
-          'textarea[name="OVERALL_EXPERIENCE_COMMENT"]'
+          StaticTargetSelectors.EXP_COMMENT_TA
         );
         if (overallExpEl) {
-          overallExpEl.value = FeedbackConfig.PURCHASE_FEEDBACK_TEXT;
+          overallExpEl.value = PluginConfig.PURCHASE_FEEDBACK_TEXT;
           enableSubmit(overallExpEl);
         }
 
@@ -166,7 +182,7 @@
          */
 
         const reviewTypeInput = item.querySelector(
-          'input[value="POSITIVE"][name^="OVERALL_EXPERIENCE"]'
+          StaticTargetSelectors.OVERALL_EXP
         );
         if (reviewTypeInput) reviewTypeInput.click();
 
@@ -175,10 +191,10 @@
          */
 
         const overallExpEl = item.querySelector(
-          'input[name="OVERALL_EXPERIENCE_COMMENT"]'
+          StaticTargetSelectors.EXP_COMMENT_IN
         );
         if (overallExpEl) {
-          overallExpEl.value = FeedbackConfig.SALE_FEEDBACK_TEXT;
+          overallExpEl.value = PluginConfig.SALE_FEEDBACK_TEXT;
           enableSubmit(overallExpEl);
         }
 
@@ -186,9 +202,9 @@
       }
     }
 
-    if (!FeedbackConfig.DEBUG) {
+    if (!PluginConfig.DEBUG) {
       const submitBtns = document.querySelectorAll(
-        'button[id^="submitFeedbackBtn-"]'
+        StaticTargetSelectors.SUBMIT_BTN
       );
       if (submitBtns.length) {
         submitBtns.forEach((b) => !b.disabled && b.click());
@@ -214,14 +230,12 @@
     }
 
     RUNNING_PROCESS = false;
+    PluginConfig.DEBUG = false;
   }
-  /**
-   * Initialize script
-   */
 
   function init() {
     notify.trigger({
-      content: "Plugin activated! Press Alt+Shift+F to fill out feedback.",
+      content: Messages.HOW_TO,
     });
     document.addEventListener("keydown", applyFeedback);
   }

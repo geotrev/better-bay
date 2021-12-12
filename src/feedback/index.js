@@ -1,12 +1,7 @@
 import { notify } from "../utils/index.js"
+import { PluginConfig, StaticTargetSelectors, Messages } from "./enums.js"
 
 let RUNNING_PROCESS = false
-
-const FeedbackConfig = {
-  DEBUG: false,
-  SALE_FEEDBACK_TEXT: "Great buyer + fast payment. Thanks.",
-  PURCHASE_FEEDBACK_TEXT: "Easy purchase + item arrived as described. Thanks.",
-}
 
 /**
  * HELPERS
@@ -17,7 +12,7 @@ function pluralize(word, count) {
 }
 
 /**
- * EVENT BINDINGS
+ * SCRIPT
  */
 
 function applyFeedback(event) {
@@ -31,22 +26,22 @@ function applyFeedback(event) {
     return
   }
 
-  if (event.ctrlKey) FeedbackConfig.DEBUG = true
+  if (event.ctrlKey) PluginConfig.DEBUG = true
   RUNNING_PROCESS = true
 
   let PURCHASE_FB_COUNT = 0
   let SALE_FB_COUNT = 0
-  const items = document.querySelectorAll(".single-feedback-template")
+  const items = document.querySelectorAll(StaticTargetSelectors.REVIEW_ITEMS)
   const length = items.length
 
   if (length === 0) {
     RUNNING_PROCESS = false
     return notify.trigger({
-      content: "No feedback, exiting.",
+      content: Messages.NO_FEEDBACK,
     })
   }
 
-  notify.trigger({ content: "Filling feedback..." })
+  notify.trigger({ content: Messages.FILLING_FEEDBACK })
 
   function enableSubmit(target) {
     target.dispatchEvent(new Event("blur"))
@@ -60,9 +55,7 @@ function applyFeedback(event) {
        * Apply on time delivery
        */
 
-      const onTimeInput = item.querySelector(
-        'input[value="2"][name^="ON_TIME_DELIVERY"]'
-      )
+      const onTimeInput = item.querySelector(StaticTargetSelectors.ON_TIME_DEL)
       if (onTimeInput) onTimeInput.click()
 
       /**
@@ -70,7 +63,7 @@ function applyFeedback(event) {
        */
 
       const reviewTypeInput = item.querySelector(
-        'input[value="POSITIVE"][name^="OVERALL_EXPERIENCE"]'
+        StaticTargetSelectors.OVERALL_EXP
       )
       if (reviewTypeInput) reviewTypeInput.click()
 
@@ -80,25 +73,23 @@ function applyFeedback(event) {
 
       // item description
       const itemDescStar = item.querySelector(
-        'input[value="5"][name^="DSR_ITEM_AS_DESCRIBED"]'
+        StaticTargetSelectors.ITEM_AS_DESC
       )
       if (itemDescStar) itemDescStar.click()
 
       // shipping costs
       const shipCostStar = item.querySelector(
-        'input[value="5"][name^="DSR_SHIPPING_CHARGES"]'
+        StaticTargetSelectors.SHIP_CHARGES
       )
       if (shipCostStar) shipCostStar.click()
 
       // shipping time
-      const shipTimeStar = item.querySelector(
-        'input[value="5"][name^="DSR_SHIPPING_TIME"]'
-      )
+      const shipTimeStar = item.querySelector(StaticTargetSelectors.SHIP_TIME)
       if (shipTimeStar) shipTimeStar.click()
 
       // seller communication
       const sellCommStar = item.querySelector(
-        'input[value="5"][name^="DSR_COMMUNICATION"]'
+        StaticTargetSelectors.SELLER_COMMS
       )
       if (sellCommStar) sellCommStar.click()
 
@@ -107,10 +98,10 @@ function applyFeedback(event) {
        */
 
       const overallExpEl = item.querySelector(
-        'textarea[name="OVERALL_EXPERIENCE_COMMENT"]'
+        StaticTargetSelectors.EXP_COMMENT_TA
       )
       if (overallExpEl) {
-        overallExpEl.value = FeedbackConfig.PURCHASE_FEEDBACK_TEXT
+        overallExpEl.value = PluginConfig.PURCHASE_FEEDBACK_TEXT
         enableSubmit(overallExpEl)
       }
 
@@ -121,7 +112,7 @@ function applyFeedback(event) {
        */
 
       const reviewTypeInput = item.querySelector(
-        'input[value="POSITIVE"][name^="OVERALL_EXPERIENCE"]'
+        StaticTargetSelectors.OVERALL_EXP
       )
       if (reviewTypeInput) reviewTypeInput.click()
 
@@ -130,10 +121,10 @@ function applyFeedback(event) {
        */
 
       const overallExpEl = item.querySelector(
-        'input[name="OVERALL_EXPERIENCE_COMMENT"]'
+        StaticTargetSelectors.EXP_COMMENT_IN
       )
       if (overallExpEl) {
-        overallExpEl.value = FeedbackConfig.SALE_FEEDBACK_TEXT
+        overallExpEl.value = PluginConfig.SALE_FEEDBACK_TEXT
         enableSubmit(overallExpEl)
       }
 
@@ -141,9 +132,9 @@ function applyFeedback(event) {
     }
   }
 
-  if (!FeedbackConfig.DEBUG) {
+  if (!PluginConfig.DEBUG) {
     const submitBtns = document.querySelectorAll(
-      'button[id^="submitFeedbackBtn-"]'
+      StaticTargetSelectors.SUBMIT_BTN
     )
     if (submitBtns.length) {
       submitBtns.forEach((b) => !b.disabled && b.click())
@@ -169,14 +160,12 @@ function applyFeedback(event) {
   }
 
   RUNNING_PROCESS = false
+  PluginConfig.DEBUG = false
 }
-/**
- * Initialize script
- */
 
 function init() {
   notify.trigger({
-    content: "Plugin activated! Press Alt+Shift+F to fill out feedback.",
+    content: Messages.HOW_TO,
   })
   document.addEventListener("keydown", applyFeedback)
 }
