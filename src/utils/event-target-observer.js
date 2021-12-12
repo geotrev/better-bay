@@ -15,6 +15,11 @@ import { load } from "./load.js"
  */
 export function createEventTargetObserver() {
   const handlerMap = new Map()
+  const mutationConfig = {
+    attributes: true,
+    subtree: true,
+    childList: true,
+  }
 
   function subscribeTargets(config, observer) {
     const entry = handlerMap.get(config.sel)
@@ -23,7 +28,7 @@ export function createEventTargetObserver() {
       handlerMap.set(config.sel, config)
       config.elements.forEach((el) => {
         el.dataset.superBaySel = config.sel
-        observer.observe(el)
+        observer.observe(el, mutationConfig)
         el.addEventListener(config.type, config.handler)
       })
     }
@@ -33,8 +38,8 @@ export function createEventTargetObserver() {
     let changed = []
 
     for (const mutation of mutations) {
-      const { target } = mutation
-      if (target.isConnected) continue
+      const { target, removedNodes } = mutation
+      if (Array.from(removedNodes).indexOf(target) === -1) continue
 
       const config = handlerMap.get(target.dataset.superBaySel)
 
