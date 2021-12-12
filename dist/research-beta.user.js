@@ -2,7 +2,7 @@
 // @name        Super Bay - Research
 // @description Better controls in seller hub research
 // @namespace   https://github.com/geotrev/super-bay
-// @version     1.0.14
+// @version     1.0.16-beta.0
 // @author      George Treviranus
 // @run-at      document-idle
 // @match       https://www.ebay.com/sh/research*
@@ -45,7 +45,7 @@
 
   const notify = new Notify();
 
-  async function load(callback, content, tries = 20) {
+  async function load(callback, failMsg, tries = 50) {
     let i = -1,
       res = null;
 
@@ -57,43 +57,52 @@
         }, 250)
       );
 
-      if (res) return res
+      if (res) {
+        return res
+      }
     }
 
-    if (content) notify.trigger({ content });
+    if (failMsg) {
+      notify.trigger({ content: failMsg });
+    }
   }
 
-  const Selectors = {
+  const StaticTargetSelectors = {
     SOLD_RESULT_TABLE: ".sold-result-table",
-    SEARCH: ".research-container input",
+    SEARCH_INPUT: ".research-container input",
+    SEARCH_DROPDOWN: ".search-input-panel__dropdown",
+    SEARCH_SUBMIT_BTN: ".search-input-panel__research-button",
     TABLE_ROW: ".research-table-row",
     TABLE_ROW_ANCHOR: ".research-table-row__link-row-anchor",
   };
 
-  const RefreshTargets = [
-    ".search-input-panel__research-button",
-    ".search-input-panel__dropdown",
+  const DynamicTargetSelectors = [
     ".tabs__items",
+    ".category-selection-panel .filter-menu-button__items",
+    ".category-selection-panel .filter-menu-button__footer",
   ];
 
-  const GroupedRefreshTargets = [".filter-menu-button__footer"];
+  const GroupedDynamicTargetSelectors = [
+    ".filters-panel .filter-menu-button__footer",
+    ".search-filter-pills .filter-pill__close",
+  ];
 
   const Colors = {
     NO_ANCHOR_BG_COLOR: "#EFEFEF",
   };
 
-  // upgrade table
+  let dynamicTargets = [];
 
   function upgradeSoldTable() {
     notify.trigger({
       content: "Table upgraded. Removed listings have a darker background color.",
     });
 
-    const table = document.querySelector(Selectors.SOLD_RESULT_TABLE);
-    const tableRows = table.querySelectorAll(Selectors.TABLE_ROW);
+    const table = document.querySelector(StaticTargetSelectors.SOLD_RESULT_TABLE);
+    const tableRows = table.querySelectorAll(StaticTargetSelectors.TABLE_ROW);
 
     for (const row of tableRows) {
-      const anchor = row.querySelector(Selectors.TABLE_ROW_ANCHOR);
+      const anchor = row.querySelector(StaticTargetSelectors.TABLE_ROW_ANCHOR);
 
       if (!anchor) {
         row.style.backgroundColor = Colors.NO_ANCHOR_BG_COLOR;
@@ -105,7 +114,7 @@
 
   async function tryUpgradeSoldTable() {
     const table = await load(
-      () => document.querySelector(Selectors.SOLD_RESULT_TABLE),
+      () => document.querySelector(StaticTargetSelectors.SOLD_RESULT_TABLE),
       "Results table took too long to load. Try again."
     );
 
@@ -114,12 +123,50 @@
 
   // event listeners
 
+  /**
+   * If the target isn't disabled, wait for a new
+   * table state and upgrade the table + filter UI
+   */
   function handleClick(event) {
-    if (!event.target.disabled) tryUpgradeSoldTable();
+    if (!event.target.disabled) {
+      setTimeout(async () => {
+        await tryUpgradeSoldTable();
+
+        dynamicTargets.forEach((target) =>
+          target.removeEventListener("click", handleClick)
+        );
+        dynamicTargets = [];
+
+        addDynamicTargetListeners();
+      }, 2000);
+    }
   }
 
   function handleKeydown(event) {
     if (event.key === "Enter") tryUpgradeSoldTable();
+  }
+
+  async function addDynamicTargetListeners() {
+    for (const selector of DynamicTargetSelectors) {
+      const target = await load(() => document.querySelector(selector));
+
+      if (target) {
+        target.addEventListener("click", handleClick);
+        dynamicTargets.push(target);
+      }
+    }
+
+    for (const selector of GroupedDynamicTargetSelectors) {
+      const targets = await load(() => {
+        const els = Array.from(document.querySelectorAll(selector));
+        return els.length ? els : null
+      });
+
+      if (targets) {
+        targets.forEach((target) => target.addEventListener("click", handleClick));
+        dynamicTargets.push(...targets);
+      }
+    }
   }
 
   // init the plugin
@@ -129,31 +176,26 @@
       content: "Plugin activated!",
     });
 
-    // handle enter of search input
+    // setup static update triggers
 
-    const searchBtn = document.querySelector(Selectors.SEARCH);
-    searchBtn.addEventListener("keydown", handleKeydown);
+    const searchSubmitBtn = document.querySelector(
+      StaticTargetSelectors.SEARCH_SUBMIT_BTN
+    );
+    const searchDropdown = document.querySelector(
+      StaticTargetSelectors.SEARCH_DROPDOWN
+    );
+    const searchInput = document.querySelector(StaticTargetSelectors.SEARCH_INPUT);
 
-    // register click targets that refresh the table
+    searchSubmitBtn.addEventListener("click", handleClick);
+    searchDropdown.addEventListener("click", handleClick);
+    searchInput.addEventListener("keydown", handleKeydown);
 
-    for (const sel of RefreshTargets) {
-      const el = await load(() => document.querySelector(sel));
+    // setup dynamic update triggers
 
-      if (el) {
-        el.addEventListener("click", handleClick);
-      }
-    }
-    for (const groupSel of GroupedRefreshTargets) {
-      const els = await load(() => document.querySelectorAll(groupSel));
-
-      if (els && els.length) {
-        els.forEach((el) => el.addEventListener("click", handleClick));
-      }
-    }
+    await tryUpgradeSoldTable();
+    await addDynamicTargetListeners();
 
     // Check if a table exists on load. If so, upgrade it.
-
-    tryUpgradeSoldTable();
   }
 
   init();

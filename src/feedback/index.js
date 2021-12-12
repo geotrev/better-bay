@@ -23,6 +23,7 @@ function pluralize(word, count) {
 function applyFeedback(event) {
   if (
     !window.location.pathname.startsWith("/fdbk/leave_feedback") ||
+    RUNNING_PROCESS ||
     !["f", "F"].includes(event.key) ||
     !event.altKey ||
     !event.shiftKey
@@ -30,10 +31,7 @@ function applyFeedback(event) {
     return
   }
 
-  if (event.ctrlKey) {
-    FeedbackConfig.DEBUG = true
-  }
-
+  if (event.ctrlKey) FeedbackConfig.DEBUG = true
   RUNNING_PROCESS = true
 
   let PURCHASE_FB_COUNT = 0

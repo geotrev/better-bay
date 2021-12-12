@@ -2,7 +2,7 @@
 // @name        Super Bay - Feedback
 // @description Automate feedback on ebay
 // @namespace   https://github.com/geotrev/super-bay
-// @version     1.0.14
+// @version     1.0.16-beta.0
 // @author      George Treviranus
 // @run-at      document-idle
 // @match       https://www.ebay.com/fdbk/leave_feedback*
@@ -45,6 +45,8 @@
 
   const notify = new Notify();
 
+  let RUNNING_PROCESS = false;
+
   const FeedbackConfig = {
     DEBUG: false,
     SALE_FEEDBACK_TEXT: "Great buyer + fast payment. Thanks.",
@@ -66,6 +68,7 @@
   function applyFeedback(event) {
     if (
       !window.location.pathname.startsWith("/fdbk/leave_feedback") ||
+      RUNNING_PROCESS ||
       !["f", "F"].includes(event.key) ||
       !event.altKey ||
       !event.shiftKey
@@ -73,9 +76,8 @@
       return
     }
 
-    if (event.ctrlKey) {
-      FeedbackConfig.DEBUG = true;
-    }
+    if (event.ctrlKey) FeedbackConfig.DEBUG = true;
+    RUNNING_PROCESS = true;
 
     let PURCHASE_FB_COUNT = 0;
     let SALE_FB_COUNT = 0;
@@ -83,6 +85,7 @@
     const length = items.length;
 
     if (length === 0) {
+      RUNNING_PROCESS = false;
       return notify.trigger({
         content: "No feedback, exiting.",
       })
@@ -209,6 +212,8 @@
       )}.`,
       });
     }
+
+    RUNNING_PROCESS = false;
   }
   /**
    * Initialize script

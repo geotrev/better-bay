@@ -27,7 +27,7 @@ function getBetaScriptUrl(name) {
 export default scriptSources.reduce((configs, sourcePath) => {
   const pathParts = sourcePath.split("/")
   const name = pathParts[pathParts.length - 1]
-  const mainFile = path.resolve(`dist/${name}.user.js`)
+  const standardFile = path.resolve(`dist/${name}.user.js`)
   const betaFile = path.resolve(`dist/${name}-beta.user.js`)
   const input = `${sourcePath}/index.js`
 
@@ -41,11 +41,12 @@ export default scriptSources.reduce((configs, sourcePath) => {
 
   return [
     ...configs,
+    /* Standard build */
     {
       input,
       output: [
         {
-          file: mainFile,
+          file: standardFile,
           format: "iife",
           plugins: [
             metablock({
@@ -74,6 +75,7 @@ export default scriptSources.reduce((configs, sourcePath) => {
         }),
       ],
     },
+    /* Beta build */
     {
       input,
       output: [
@@ -83,7 +85,7 @@ export default scriptSources.reduce((configs, sourcePath) => {
           generatedCode: { compact: false },
           plugins: [
             metablock({
-              file: path.resolve("./meta.json"),
+              file: path.resolve("./meta-beta.json"),
               override: {
                 ...metaOverride,
                 downloadURL: betaScriptUrl,
