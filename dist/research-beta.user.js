@@ -2,7 +2,7 @@
 // @name        Super Bay - Research
 // @description Better controls in seller hub research
 // @namespace   https://github.com/geotrev/super-bay
-// @version     1.0.14
+// @version     1.0.15-beta.0
 // @author      George Treviranus
 // @run-at      document-idle
 // @match       https://www.ebay.com/sh/research*
@@ -67,112 +67,41 @@
     }
   }
 
-  const mutationMap = new Map();
-  const mutationConfig = {
-    attributes: true,
-    subtree: true,
-    childList: true,
-  };
-
-  function subscribeTargets(config, observer) {
-    const entry = mutationMap.get(config.selector);
-
-    if (!entry) {
-      mutationMap.set(config.selector, config);
-      config.elements.forEach((el) => {
-        el.dataset.superBaySel = config.selector;
-        observer.observe(el, mutationConfig);
-        el.addEventListener(config.type, config.handler);
-      });
-    }
-  }
-
-  async function mutationCallback(mutations, observer) {
-    let removedTargets = [];
-
-    for (const mutation of mutations) {
-      const { target, removedNodes } = mutation;
-      if (Array.from(removedNodes).indexOf(target) === -1) continue
-
-      const config = mutationMap.get(target.dataset.superBaySel);
-
-      if (config) {
-        config.elements.forEach((el) =>
-          el.removeEventListener(config.type, config.handler)
-        );
-
-        config.elements.forEach((el) => observer.unobserve(el));
-        config.elements = [];
-
-        mutationMap.delete(config.selector);
-        removedTargets.push(config);
-      }
-    }
-
-    // wait for new elements if there were changes that resulted in deletions
-    if (removedTargets.length) {
-      for (const config of removedTargets) {
-        const elements = await load(() => {
-          const els = Array.from(document.querySelectorAll(config.selector));
-          return els.length ? els : null
-        });
-
-        if (elements) {
-          config.elements = elements;
-          subscribeTargets(config, observer);
-        }
-      }
-    }
-  }
-
-  function createEventTargetObserver() {
-    const observer = new MutationObserver(mutationCallback);
-
-    // config = {elements, selector, type, handler}
-    /**
-     * @param {{elements: HTMLElement[], selector: string, type: string, handler: function}}
-     */
-    function subscribeEventTargets(config = {}) {
-      subscribeTargets(config, observer);
-    }
-
-    // will probably need this... eventually.
-    function unsubscribeEventTargets() {}
-
-    return { subscribeEventTargets, unsubscribeEventTargets }
-  }
-
-  const Selectors = {
+  const StaticTargetSelectors = {
     SOLD_RESULT_TABLE: ".sold-result-table",
-    SEARCH: ".research-container input",
+    SEARCH_INPUT: ".research-container input",
+    SEARCH_DROPDOWN: ".search-input-panel__dropdown",
     TABLE_ROW: ".research-table-row",
     TABLE_ROW_ANCHOR: ".research-table-row__link-row-anchor",
+    SEARCH_SUBMIT_BTN: ".search-input-panel__research-button",
+    CATEGORY_APPLY_BTN: ".category-selection-panel .filter-menu-button__footer",
+    CATEGORY_ITEMS_WRAPPER:
+      ".category-selection-panel .filter-menu-button__items",
   };
 
-  const RefreshTargets = [
-    ".search-input-panel__research-button",
-    ".search-input-panel__dropdown",
-    ".tabs__items",
-  ];
+  const DynamicTargetSelectors = [".tabs__items"];
 
-  const GroupedRefreshTargets = [".filter-menu-button__footer"];
+  const GroupedDynamicTargetSelectors = [
+    ".filters-panel .filter-menu-button__footer",
+    ".search-filter-pills .filter-pill__close",
+  ];
 
   const Colors = {
     NO_ANCHOR_BG_COLOR: "#EFEFEF",
   };
 
-  const { subscribeEventTargets } = createEventTargetObserver();
+  let dynamicTargets = [];
 
   function upgradeSoldTable() {
     notify.trigger({
       content: "Table upgraded. Removed listings have a darker background color.",
     });
 
-    const table = document.querySelector(Selectors.SOLD_RESULT_TABLE);
-    const tableRows = table.querySelectorAll(Selectors.TABLE_ROW);
+    const table = document.querySelector(StaticTargetSelectors.SOLD_RESULT_TABLE);
+    const tableRows = table.querySelectorAll(StaticTargetSelectors.TABLE_ROW);
 
     for (const row of tableRows) {
-      const anchor = row.querySelector(Selectors.TABLE_ROW_ANCHOR);
+      const anchor = row.querySelector(StaticTargetSelectors.TABLE_ROW_ANCHOR);
 
       if (!anchor) {
         row.style.backgroundColor = Colors.NO_ANCHOR_BG_COLOR;
@@ -184,7 +113,7 @@
 
   async function tryUpgradeSoldTable() {
     const table = await load(
-      () => document.querySelector(Selectors.SOLD_RESULT_TABLE),
+      () => document.querySelector(StaticTargetSelectors.SOLD_RESULT_TABLE),
       "Results table took too long to load. Try again."
     );
 
@@ -193,12 +122,44 @@
 
   // event listeners
 
-  function handleClick(event) {
-    if (!event.target.disabled) tryUpgradeSoldTable();
+  async function handleClick(event) {
+    if (!event.target.disabled) {
+      await tryUpgradeSoldTable();
+      await removeDynamicTargetListeners();
+      await addDynamicTargetListeners();
+    }
   }
 
   function handleKeydown(event) {
     if (event.key === "Enter") tryUpgradeSoldTable();
+  }
+
+  async function addDynamicTargetListeners() {
+    for (const selector of DynamicTargetSelectors) {
+      const target = await load(() => document.querySelector(selector));
+      target.addEventListener("click", handleClick);
+      dynamicTargets.push(target);
+    }
+
+    for (const selector of GroupedDynamicTargetSelectors) {
+      const targets = await load(() => {
+        const els = Array.from(document.querySelectorAll(selector));
+        return els.length ? els : null
+      });
+
+      if (targets) {
+        targets.forEach((target) => target.addEventListener("click", handleClick));
+      }
+
+      dynamicTargets.push(...targets);
+    }
+  }
+
+  async function removeDynamicTargetListeners() {
+    dynamicTargets.forEach((target) =>
+      target.removeEventListener("click", handleClick)
+    );
+    dynamicTargets = [];
   }
 
   // init the plugin
@@ -208,44 +169,31 @@
       content: "Plugin activated!",
     });
 
-    // wrap event listeners with mutationobserver to auto-replace
-    // handler when they're removed via filtering etc.
+    // setup static update triggers
 
-    // handle enter of search input
+    const searchSubmitBtn = document.querySelector(
+      StaticTargetSelectors.SEARCH_SUBMIT_BTN
+    );
+    const searchDropdown = document.querySelector(
+      StaticTargetSelectors.SEARCH_DROPDOWN
+    );
+    const searchInput = document.querySelector(StaticTargetSelectors.SEARCH_INPUT);
+    const categoryFilterDropdown = document.querySelector(
+      StaticTargetSelectors.CATEGORY_ITEMS_WRAPPER
+    );
+    const categoryFilterApplyBtn = document.querySelector(
+      StaticTargetSelectors.CATEGORY_APPLY_BTN
+    );
 
-    const searchBtn = document.querySelector(Selectors.SEARCH);
-    searchBtn.addEventListener("keydown", handleKeydown);
+    searchSubmitBtn.addEventListener("click", handleClick);
+    searchDropdown.addEventListener("click", handleClick);
+    searchInput.addEventListener("keydown", handleKeydown);
+    categoryFilterDropdown.addEventListener("keydown", handleClick);
+    categoryFilterApplyBtn.addEventListener("keydown", handleClick);
 
-    // register click targets that refresh the table
+    // setup dynamic update triggers
 
-    for (const selector of RefreshTargets) {
-      const element = await load(() => document.querySelector(selector));
-
-      if (element) {
-        subscribeEventTargets({
-          elements: [element],
-          selector,
-          type: "click",
-          handler: handleClick,
-        });
-      }
-    }
-
-    for (const selector of GroupedRefreshTargets) {
-      const elements = await load(() => {
-        const els = Array.from(document.querySelectorAll(selector));
-        return els.length ? els : null
-      });
-
-      if (elements) {
-        subscribeEventTargets({
-          elements,
-          selector,
-          type: "click",
-          handler: handleClick,
-        });
-      }
-    }
+    await addDynamicTargetListeners();
 
     // Check if a table exists on load. If so, upgrade it.
 

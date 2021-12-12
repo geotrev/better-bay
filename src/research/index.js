@@ -1,23 +1,23 @@
-import { load, notify, createEventTargetObserver } from "../utils/index.js"
+import { load, notify } from "../utils/index.js"
 import {
-  Selectors,
-  RefreshTargets,
-  GroupedRefreshTargets,
+  StaticTargetSelectors,
+  DynamicTargetSelectors,
+  GroupedDynamicTargetSelectors,
   Colors,
 } from "./enums.js"
 
-const { subscribeEventTargets } = createEventTargetObserver()
+let dynamicTargets = []
 
 function upgradeSoldTable() {
   notify.trigger({
     content: "Table upgraded. Removed listings have a darker background color.",
   })
 
-  const table = document.querySelector(Selectors.SOLD_RESULT_TABLE)
-  const tableRows = table.querySelectorAll(Selectors.TABLE_ROW)
+  const table = document.querySelector(StaticTargetSelectors.SOLD_RESULT_TABLE)
+  const tableRows = table.querySelectorAll(StaticTargetSelectors.TABLE_ROW)
 
   for (const row of tableRows) {
-    const anchor = row.querySelector(Selectors.TABLE_ROW_ANCHOR)
+    const anchor = row.querySelector(StaticTargetSelectors.TABLE_ROW_ANCHOR)
 
     if (!anchor) {
       row.style.backgroundColor = Colors.NO_ANCHOR_BG_COLOR
@@ -29,7 +29,7 @@ function upgradeSoldTable() {
 
 async function tryUpgradeSoldTable() {
   const table = await load(
-    () => document.querySelector(Selectors.SOLD_RESULT_TABLE),
+    () => document.querySelector(StaticTargetSelectors.SOLD_RESULT_TABLE),
     "Results table took too long to load. Try again."
   )
 
@@ -38,12 +38,44 @@ async function tryUpgradeSoldTable() {
 
 // event listeners
 
-function handleClick(event) {
-  if (!event.target.disabled) tryUpgradeSoldTable()
+async function handleClick(event) {
+  if (!event.target.disabled) {
+    await tryUpgradeSoldTable()
+    await removeDynamicTargetListeners()
+    await addDynamicTargetListeners()
+  }
 }
 
 function handleKeydown(event) {
   if (event.key === "Enter") tryUpgradeSoldTable()
+}
+
+async function addDynamicTargetListeners() {
+  for (const selector of DynamicTargetSelectors) {
+    const target = await load(() => document.querySelector(selector))
+    target.addEventListener("click", handleClick)
+    dynamicTargets.push(target)
+  }
+
+  for (const selector of GroupedDynamicTargetSelectors) {
+    const targets = await load(() => {
+      const els = Array.from(document.querySelectorAll(selector))
+      return els.length ? els : null
+    })
+
+    if (targets) {
+      targets.forEach((target) => target.addEventListener("click", handleClick))
+    }
+
+    dynamicTargets.push(...targets)
+  }
+}
+
+async function removeDynamicTargetListeners() {
+  dynamicTargets.forEach((target) =>
+    target.removeEventListener("click", handleClick)
+  )
+  dynamicTargets = []
 }
 
 // init the plugin
@@ -53,44 +85,31 @@ async function init() {
     content: "Plugin activated!",
   })
 
-  // wrap event listeners with mutationobserver to auto-replace
-  // handler when they're removed via filtering etc.
+  // setup static update triggers
 
-  // handle enter of search input
+  const searchSubmitBtn = document.querySelector(
+    StaticTargetSelectors.SEARCH_SUBMIT_BTN
+  )
+  const searchDropdown = document.querySelector(
+    StaticTargetSelectors.SEARCH_DROPDOWN
+  )
+  const searchInput = document.querySelector(StaticTargetSelectors.SEARCH_INPUT)
+  const categoryFilterDropdown = document.querySelector(
+    StaticTargetSelectors.CATEGORY_ITEMS_WRAPPER
+  )
+  const categoryFilterApplyBtn = document.querySelector(
+    StaticTargetSelectors.CATEGORY_APPLY_BTN
+  )
 
-  const searchBtn = document.querySelector(Selectors.SEARCH)
-  searchBtn.addEventListener("keydown", handleKeydown)
+  searchSubmitBtn.addEventListener("click", handleClick)
+  searchDropdown.addEventListener("click", handleClick)
+  searchInput.addEventListener("keydown", handleKeydown)
+  categoryFilterDropdown.addEventListener("keydown", handleClick)
+  categoryFilterApplyBtn.addEventListener("keydown", handleClick)
 
-  // register click targets that refresh the table
+  // setup dynamic update triggers
 
-  for (const selector of RefreshTargets) {
-    const element = await load(() => document.querySelector(selector))
-
-    if (element) {
-      subscribeEventTargets({
-        elements: [element],
-        selector,
-        type: "click",
-        handler: handleClick,
-      })
-    }
-  }
-
-  for (const selector of GroupedRefreshTargets) {
-    const elements = await load(() => {
-      const els = Array.from(document.querySelectorAll(selector))
-      return els.length ? els : null
-    })
-
-    if (elements) {
-      subscribeEventTargets({
-        elements,
-        selector,
-        type: "click",
-        handler: handleClick,
-      })
-    }
-  }
+  await addDynamicTargetListeners()
 
   // Check if a table exists on load. If so, upgrade it.
 
