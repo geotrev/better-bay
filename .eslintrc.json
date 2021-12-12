@@ -1,13 +1,12 @@
 {
   "env": {
     "browser": true,
-    "es6": true
+    "es6": true,
+    "node": true,
+    "commonjs": true
   },
   "parser": "@babel/eslint-parser",
-  "extends": [
-    "eslint:recommended",
-    "plugin:prettier/recommended"
-  ],
+  "extends": ["eslint:recommended", "plugin:prettier/recommended"],
   "rules": {
     "no-console": 2,
     "no-unused-vars": ["error"]

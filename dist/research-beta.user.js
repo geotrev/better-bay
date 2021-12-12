@@ -1,13 +1,13 @@
 // ==UserScript==
-// @name        Super Bay - Research
+// @name        Better Bay - Research
 // @description Better controls in seller hub research
-// @namespace   https://github.com/geotrev/super-bay
-// @version     1.0.16-beta.0
+// @namespace   https://github.com/geotrev/better-bay
+// @version     1.0.16-beta.1
 // @author      George Treviranus
 // @run-at      document-idle
 // @match       https://www.ebay.com/sh/research*
-// @downloadURL https://github.com/geotrev/super-bay/raw/develop/dist/research-beta.user.js
-// @updateURL   https://github.com/geotrev/super-bay/raw/develop/dist/research-beta.user.js
+// @downloadURL https://github.com/geotrev/better-bay/raw/develop/dist/research-beta.user.js
+// @updateURL   https://github.com/geotrev/better-bay/raw/develop/dist/research-beta.user.js
 // @grant       none
 // ==/UserScript==
 (function () {
@@ -91,11 +91,22 @@
     NO_ANCHOR_BG_COLOR: "#EFEFEF",
   };
 
+  const Messages = {
+    PLUGIN_ACTIVATED: "Plugin activated!",
+    TABLE_UPGRADED:
+      "Table upgraded. Removed listings have a darker background color.",
+    TABLE_UPGRADE_FAILED: "Results table took too long to load. Try again.",
+  };
+
+  /**
+   * SCRIPT
+   */
+
   let dynamicTargets = [];
 
   function upgradeSoldTable() {
     notify.trigger({
-      content: "Table upgraded. Removed listings have a darker background color.",
+      content: Messages.TABLE_UPGRADED,
     });
 
     const table = document.querySelector(StaticTargetSelectors.SOLD_RESULT_TABLE);
@@ -110,40 +121,36 @@
     }
   }
 
-  // checks if the table exists before upgrading it.
-
   async function tryUpgradeSoldTable() {
     const table = await load(
       () => document.querySelector(StaticTargetSelectors.SOLD_RESULT_TABLE),
-      "Results table took too long to load. Try again."
+      Messages.TABLE_UPGRADE_FAILED
     );
 
     if (table) upgradeSoldTable();
   }
 
-  // event listeners
-
-  /**
-   * If the target isn't disabled, wait for a new
-   * table state and upgrade the table + filter UI
-   */
   function handleClick(event) {
     if (!event.target.disabled) {
-      setTimeout(async () => {
-        await tryUpgradeSoldTable();
-
-        dynamicTargets.forEach((target) =>
-          target.removeEventListener("click", handleClick)
-        );
-        dynamicTargets = [];
-
-        addDynamicTargetListeners();
-      }, 2000);
+      setTimeout(refreshDynamicContent, 2000);
     }
   }
 
   function handleKeydown(event) {
-    if (event.key === "Enter") tryUpgradeSoldTable();
+    if (event.key === "Enter") {
+      setTimeout(refreshDynamicContent, 2000);
+    }
+  }
+
+  async function refreshDynamicContent() {
+    await tryUpgradeSoldTable();
+
+    dynamicTargets.forEach((target) =>
+      target.removeEventListener("click", handleClick)
+    );
+    dynamicTargets = [];
+
+    addDynamicTargetListeners();
   }
 
   async function addDynamicTargetListeners() {
@@ -169,11 +176,9 @@
     }
   }
 
-  // init the plugin
-
   async function init() {
     notify.trigger({
-      content: "Plugin activated!",
+      content: Messages.PLUGIN_ACTIVATED,
     });
 
     // setup static update triggers
@@ -190,7 +195,7 @@
     searchDropdown.addEventListener("click", handleClick);
     searchInput.addEventListener("keydown", handleKeydown);
 
-    // setup dynamic update triggers
+    // upgrade table + setup dynamic update triggers
 
     await tryUpgradeSoldTable();
     await addDynamicTargetListeners();

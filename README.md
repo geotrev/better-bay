@@ -1,13 +1,13 @@
-# Super Bay
+# Better Bay
 
-Tampermonkey scripts to automate chores on ebay.
+Tampermonkey scripts to automate chores and generally improve the experience of ebay.
 
 ## Install
 
 Add the [tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo) extension to Chrome.
 
-1. [Install Super Bay – Feedback](https://github.com/geotrev/super-bay/raw/main/dist/feedback.user.js).
-2. [Install Super Bay – Research](https://github.com/geotrev/super-bay/raw/main/dist/research.user.js).
+1. [Install Better Bay – Feedback](https://github.com/geotrev/better-bay/raw/main/dist/feedback.user.js).
+2. [Install Better Bay – Research](https://github.com/geotrev/better-bay/raw/main/dist/research.user.js).
 
 ### Feedback Shortcuts
 
@@ -19,5 +19,5 @@ Add the [tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dh
 
 Experimental new features. May be buggy.
 
-1. [Install BETA Super Bay – Feedback](https://github.com/geotrev/super-bay/raw/develop/dist/feedback-beta.user.js).
-2. [Install BETA Super Bay – Research](https://github.com/geotrev/super-bay/raw/develop/dist/research-beta.user.js).
+1. [Install BETA Better Bay – Feedback](https://github.com/geotrev/better-bay/raw/develop/dist/feedback-beta.user.js).
+2. [Install BETA Better Bay – Research](https://github.com/geotrev/better-bay/raw/develop/dist/research-beta.user.js).

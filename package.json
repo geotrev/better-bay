@@ -1,44 +1,52 @@
 {
-  "name": "super-bay",
+  "name": "better-bay",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "build": "rollup -c",
     "pre-commit:build": "npm run build && git add dist",
-    "prettier:check": "prettier --config .prettierrc.json --check \"src/**/*.{js,scss,css}\"",
+    "eslint:check": "eslint --ext .js -c .eslintrc.json",
+    "prettier:check": "prettier --config .prettierrc.json --check",
+    "prettier:write": "prettier --write",
     "prepare": "husky install"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/geotrev/super-bay.git"
+    "url": "git+https://github.com/geotrev/better-bay.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/geotrev/super-bay/issues"
+    "url": "https://github.com/geotrev/better-bay/issues"
   },
-  "homepage": "https://github.com/geotrev/super-bay#readme",
+  "homepage": "https://github.com/geotrev/better-bay#readme",
   "dependencies": {
     "@babel/core": "^7.16.0",
-    "@babel/eslint-parser": "^7.16.3",
-    "@babel/preset-env": "^7.16.4",
-    "eslint": "^8.3.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "prettier": "^2.5.0",
     "rollup": "^2.60.1",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-userscript-metablock": "^0.3.1"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.16.3",
+    "@babel/preset-env": "^7.16.4",
+    "eslint": "^8.3.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
     "lint-staged": "^12.1.2",
-    "husky": "^7.0.0"
+    "husky": "^7.0.0",
+    "prettier": "^2.5.0"
   },
   "lint-staged": {
     "src/**/*.{js,scss,css}": [
       "npm run prettier:check"
+    ],
+    "src/**/*.js": [
+      "npm run eslint:check"
+    ],
+    "*.json": [
+      "npm run prettier:write"
     ]
   }
 }
