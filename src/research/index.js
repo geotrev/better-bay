@@ -38,9 +38,22 @@ async function tryUpgradeSoldTable() {
 
 // event listeners
 
-async function handleClick(event) {
+/**
+ * If the target isn't disabled, wait for a new
+ * table state and upgrade the table + filter UI
+ */
+function handleClick(event) {
   if (!event.target.disabled) {
-    await refreshDynamicContent()
+    setTimeout(async () => {
+      await tryUpgradeSoldTable()
+
+      dynamicTargets.forEach((target) =>
+        target.removeEventListener("click", handleClick)
+      )
+      dynamicTargets = []
+
+      addDynamicTargetListeners()
+    }, 2000)
   }
 }
 
@@ -69,14 +82,6 @@ async function addDynamicTargetListeners() {
       dynamicTargets.push(...targets)
     }
   }
-}
-
-async function refreshDynamicContent() {
-  dynamicTargets.forEach((target) =>
-    target.removeEventListener("click", handleClick)
-  )
-  dynamicTargets = []
-  tryUpgradeSoldTable()
 }
 
 // init the plugin

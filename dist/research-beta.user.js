@@ -2,7 +2,7 @@
 // @name        Super Bay - Research
 // @description Better controls in seller hub research
 // @namespace   https://github.com/geotrev/super-bay
-// @version     1.0.15-beta.2
+// @version     1.0.15-beta.3
 // @author      George Treviranus
 // @run-at      document-idle
 // @match       https://www.ebay.com/sh/research*
@@ -122,9 +122,22 @@
 
   // event listeners
 
-  async function handleClick(event) {
+  /**
+   * If the target isn't disabled, wait for a new
+   * table state and upgrade the table + filter UI
+   */
+  function handleClick(event) {
     if (!event.target.disabled) {
-      await refreshDynamicContent();
+      setTimeout(async () => {
+        await tryUpgradeSoldTable();
+
+        dynamicTargets.forEach((target) =>
+          target.removeEventListener("click", handleClick)
+        );
+        dynamicTargets = [];
+
+        addDynamicTargetListeners();
+      }, 2000);
     }
   }
 
@@ -153,14 +166,6 @@
         dynamicTargets.push(...targets);
       }
     }
-  }
-
-  async function refreshDynamicContent() {
-    dynamicTargets.forEach((target) =>
-      target.removeEventListener("click", handleClick)
-    );
-    dynamicTargets = [];
-    tryUpgradeSoldTable();
   }
 
   // init the plugin
