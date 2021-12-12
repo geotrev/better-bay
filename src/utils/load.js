@@ -1,6 +1,6 @@
 import { notify } from "./notify.js"
 
-export async function load(callback, content, tries = 20) {
+export async function load(callback, content, tries = 50) {
   let i = -1,
     res = null
 
@@ -12,8 +12,12 @@ export async function load(callback, content, tries = 20) {
       }, 250)
     )
 
-    if (res) return res
+    if (res) {
+      return res
+    }
   }
 
-  if (content) notify.trigger({ content })
+  if (content) {
+    notify.trigger({ content })
+  }
 }

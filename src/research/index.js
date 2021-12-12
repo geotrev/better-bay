@@ -1,25 +1,12 @@
-import { load, notify } from "../utils/index.js"
+import { load, notify, createEventTargetObserver } from "../utils/index.js"
+import {
+  Selectors,
+  RefreshTargets,
+  GroupedRefreshTargets,
+  Colors,
+} from "./enums.js"
 
-const Selectors = {
-  SOLD_RESULT_TABLE: ".sold-result-table",
-  SEARCH: ".research-container input",
-  TABLE_ROW: ".research-table-row",
-  TABLE_ROW_ANCHOR: ".research-table-row__link-row-anchor",
-}
-
-const RefreshTargets = [
-  ".search-input-panel__research-button",
-  ".search-input-panel__dropdown",
-  ".tabs__items",
-]
-
-const GroupedRefreshTargets = [".filter-menu-button__footer"]
-
-const Colors = {
-  NO_ANCHOR_BG_COLOR: "#EFEFEF",
-}
-
-// upgrade table
+const { subscribeEventTargets } = createEventTargetObserver()
 
 function upgradeSoldTable() {
   notify.trigger({
@@ -66,6 +53,9 @@ async function init() {
     content: "Plugin activated!",
   })
 
+  // wrap event listeners with mutationobserver to auto-replace
+  // handler when they're removed via filtering etc.
+
   // handle enter of search input
 
   const searchBtn = document.querySelector(Selectors.SEARCH)
@@ -73,18 +63,29 @@ async function init() {
 
   // register click targets that refresh the table
 
-  for (const sel of RefreshTargets) {
-    const el = await load(() => document.querySelector(sel))
+  for (const selector of RefreshTargets) {
+    const element = await load(() => document.querySelector(selector))
 
-    if (el) {
-      el.addEventListener("click", handleClick)
+    if (element) {
+      subscribeEventTargets({
+        elements: [element],
+        selector,
+        type: "click",
+        handler: handleClick,
+      })
     }
   }
-  for (const groupSel of GroupedRefreshTargets) {
-    const els = await load(() => document.querySelectorAll(groupSel))
 
-    if (els && els.length) {
-      els.forEach((el) => el.addEventListener("click", handleClick))
+  for (const selector of GroupedRefreshTargets) {
+    const elements = await load(() => document.querySelectorAll(selector))
+
+    if (elements && elements.length) {
+      subscribeEventTargets({
+        elements,
+        selector,
+        type: "click",
+        handler: handleClick,
+      })
     }
   }
 
