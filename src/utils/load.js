@@ -1,6 +1,6 @@
 import { notify } from "./notify.js"
 
-export async function load(callback, content, tries = 50) {
+export async function load(callback, failMsg, tries = 50) {
   let i = -1,
     res = null
 
@@ -17,7 +17,7 @@ export async function load(callback, content, tries = 50) {
     }
   }
 
-  if (content) {
-    notify.trigger({ content })
+  if (failMsg) {
+    notify.trigger({ content: failMsg })
   }
 }

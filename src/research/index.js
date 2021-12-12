@@ -77,9 +77,12 @@ async function init() {
   }
 
   for (const selector of GroupedRefreshTargets) {
-    const elements = await load(() => document.querySelectorAll(selector))
+    const elements = await load(() => {
+      const els = Array.from(document.querySelectorAll(selector))
+      return els.length ? els : null
+    })
 
-    if (elements && elements.length) {
+    if (elements) {
       subscribeEventTargets({
         elements,
         selector,
