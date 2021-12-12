@@ -1,5 +1,5 @@
 {
-  "name": "Super Bay - Feedback",
+  "name": "Better Bay - Feedback",
   "description": "Automate feedback on ebay",
   "match": "https://www.ebay.com/fdbk/leave_feedback*"
 }
