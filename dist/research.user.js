@@ -2,7 +2,7 @@
 // @name        Super Bay - Research
 // @description Better controls in seller hub research
 // @namespace   https://github.com/geotrev/super-bay
-// @version     1.0.14
+// @version     1.0.15
 // @author      George Treviranus
 // @run-at      document-idle
 // @match       https://www.ebay.com/sh/research*
