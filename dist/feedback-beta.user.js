@@ -6,8 +6,8 @@
 // @author      George Treviranus
 // @run-at      document-idle
 // @match       https://www.ebay.com/fdbk/leave_feedback*
-// @downloadURL https://github.com/geotrev/super-bay/raw/develop/dist/feedback.user.js
-// @updateURL   https://github.com/geotrev/super-bay/raw/develop/dist/feedback.user.js
+// @downloadURL https://github.com/geotrev/super-bay/raw/develop/dist/feedback-beta.user.js
+// @updateURL   https://github.com/geotrev/super-bay/raw/develop/dist/feedback-beta.user.js
 // @grant       none
 // ==/UserScript==
 (function () {

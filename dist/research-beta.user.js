@@ -6,8 +6,8 @@
 // @author      George Treviranus
 // @run-at      document-idle
 // @match       https://www.ebay.com/sh/research*
-// @downloadURL https://github.com/geotrev/super-bay/raw/develop/dist/research.user.js
-// @updateURL   https://github.com/geotrev/super-bay/raw/develop/dist/research.user.js
+// @downloadURL https://github.com/geotrev/super-bay/raw/develop/dist/research-beta.user.js
+// @updateURL   https://github.com/geotrev/super-bay/raw/develop/dist/research-beta.user.js
 // @grant       none
 // ==/UserScript==
 (function () {

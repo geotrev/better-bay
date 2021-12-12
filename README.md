@@ -19,5 +19,5 @@ Add the [tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dh
 
 Experimental new features. May be buggy.
 
-1. [Install BETA Super Bay – Feedback](https://github.com/geotrev/super-bay/raw/develop/dist/feedback.user.js).
-2. [Install BETA Super Bay – Research](https://github.com/geotrev/super-bay/raw/develop/dist/research.user.js).
+1. [Install BETA Super Bay – Feedback](https://github.com/geotrev/super-bay/raw/develop/dist/feedback-beta.user.js).
+2. [Install BETA Super Bay – Research](https://github.com/geotrev/super-bay/raw/develop/dist/research-beta.user.js).

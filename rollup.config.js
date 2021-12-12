@@ -13,7 +13,7 @@ function getScriptUrl(name) {
 }
 
 function getBetaScriptUrl(name) {
-  return `${repoRootUrl}/raw/develop/dist/${name}.user.js`
+  return `${repoRootUrl}/raw/develop/dist/${name}-beta.user.js`
 }
 
 /**
