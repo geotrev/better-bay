@@ -42,7 +42,8 @@ async function handleClick(event) {
   if (!event.target.disabled) {
     await tryUpgradeSoldTable()
     await removeDynamicTargetListeners()
-    await addDynamicTargetListeners()
+
+    setTimeout(addDynamicTargetListeners, 2000)
   }
 }
 
@@ -53,8 +54,11 @@ function handleKeydown(event) {
 async function addDynamicTargetListeners() {
   for (const selector of DynamicTargetSelectors) {
     const target = await load(() => document.querySelector(selector))
-    target.addEventListener("click", handleClick)
-    dynamicTargets.push(target)
+
+    if (target) {
+      target.addEventListener("click", handleClick)
+      dynamicTargets.push(target)
+    }
   }
 
   for (const selector of GroupedDynamicTargetSelectors) {
@@ -65,9 +69,8 @@ async function addDynamicTargetListeners() {
 
     if (targets) {
       targets.forEach((target) => target.addEventListener("click", handleClick))
+      dynamicTargets.push(...targets)
     }
-
-    dynamicTargets.push(...targets)
   }
 }
 

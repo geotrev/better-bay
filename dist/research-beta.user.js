@@ -126,7 +126,8 @@
     if (!event.target.disabled) {
       await tryUpgradeSoldTable();
       await removeDynamicTargetListeners();
-      await addDynamicTargetListeners();
+
+      setTimeout(addDynamicTargetListeners, 2000);
     }
   }
 
@@ -137,8 +138,11 @@
   async function addDynamicTargetListeners() {
     for (const selector of DynamicTargetSelectors) {
       const target = await load(() => document.querySelector(selector));
-      target.addEventListener("click", handleClick);
-      dynamicTargets.push(target);
+
+      if (target) {
+        target.addEventListener("click", handleClick);
+        dynamicTargets.push(target);
+      }
     }
 
     for (const selector of GroupedDynamicTargetSelectors) {
@@ -149,9 +153,8 @@
 
       if (targets) {
         targets.forEach((target) => target.addEventListener("click", handleClick));
+        dynamicTargets.push(...targets);
       }
-
-      dynamicTargets.push(...targets);
     }
   }
 
