@@ -115,11 +115,10 @@ async function init() {
 
   // setup dynamic update triggers
 
+  await tryUpgradeSoldTable()
   await addDynamicTargetListeners()
 
   // Check if a table exists on load. If so, upgrade it.
-
-  tryUpgradeSoldTable()
 }
 
 init()
