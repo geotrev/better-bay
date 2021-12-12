@@ -40,10 +40,7 @@ async function tryUpgradeSoldTable() {
 
 async function handleClick(event) {
   if (!event.target.disabled) {
-    await tryUpgradeSoldTable()
-    await removeDynamicTargetListeners()
-
-    setTimeout(addDynamicTargetListeners, 2000)
+    await refreshDynamicContent()
   }
 }
 
@@ -74,11 +71,12 @@ async function addDynamicTargetListeners() {
   }
 }
 
-async function removeDynamicTargetListeners() {
+async function refreshDynamicContent() {
   dynamicTargets.forEach((target) =>
     target.removeEventListener("click", handleClick)
   )
   dynamicTargets = []
+  tryUpgradeSoldTable()
 }
 
 // init the plugin
