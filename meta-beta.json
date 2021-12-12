@@ -1,5 +1,5 @@
 {
-  "version": "1.0.15-beta.0",
+  "version": "1.0.15-beta.1",
   "author": "George Treviranus",
   "namespace": "https://github.com/geotrev/super-bay",
   "run-at": "document-idle",
