@@ -2,7 +2,7 @@
 // @name        Super Bay - Research
 // @description Better controls in seller hub research
 // @namespace   https://github.com/geotrev/super-bay
-// @version     1.0.15-beta.4
+// @version     1.0.15-beta.6
 // @author      George Treviranus
 // @run-at      document-idle
 // @match       https://www.ebay.com/sh/research*
@@ -71,15 +71,16 @@
     SOLD_RESULT_TABLE: ".sold-result-table",
     SEARCH_INPUT: ".research-container input",
     SEARCH_DROPDOWN: ".search-input-panel__dropdown",
+    SEARCH_SUBMIT_BTN: ".search-input-panel__research-button",
     TABLE_ROW: ".research-table-row",
     TABLE_ROW_ANCHOR: ".research-table-row__link-row-anchor",
-    SEARCH_SUBMIT_BTN: ".search-input-panel__research-button",
-    CATEGORY_APPLY_BTN: ".category-selection-panel .filter-menu-button__footer",
-    CATEGORY_ITEMS_WRAPPER:
-      ".category-selection-panel .filter-menu-button__items",
   };
 
-  const DynamicTargetSelectors = [".tabs__items"];
+  const DynamicTargetSelectors = [
+    ".tabs__items",
+    ".category-selection-panel .filter-menu-button__items",
+    ".category-selection-panel .filter-menu-button__footer",
+  ];
 
   const GroupedDynamicTargetSelectors = [
     ".filters-panel .filter-menu-button__footer",
@@ -184,18 +185,10 @@
       StaticTargetSelectors.SEARCH_DROPDOWN
     );
     const searchInput = document.querySelector(StaticTargetSelectors.SEARCH_INPUT);
-    const categoryFilterDropdown = document.querySelector(
-      StaticTargetSelectors.CATEGORY_ITEMS_WRAPPER
-    );
-    const categoryFilterApplyBtn = document.querySelector(
-      StaticTargetSelectors.CATEGORY_APPLY_BTN
-    );
 
     searchSubmitBtn.addEventListener("click", handleClick);
     searchDropdown.addEventListener("click", handleClick);
     searchInput.addEventListener("keydown", handleKeydown);
-    categoryFilterDropdown.addEventListener("keydown", handleClick);
-    categoryFilterApplyBtn.addEventListener("keydown", handleClick);
 
     // setup dynamic update triggers
 

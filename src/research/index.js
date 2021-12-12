@@ -100,18 +100,10 @@ async function init() {
     StaticTargetSelectors.SEARCH_DROPDOWN
   )
   const searchInput = document.querySelector(StaticTargetSelectors.SEARCH_INPUT)
-  const categoryFilterDropdown = document.querySelector(
-    StaticTargetSelectors.CATEGORY_ITEMS_WRAPPER
-  )
-  const categoryFilterApplyBtn = document.querySelector(
-    StaticTargetSelectors.CATEGORY_APPLY_BTN
-  )
 
   searchSubmitBtn.addEventListener("click", handleClick)
   searchDropdown.addEventListener("click", handleClick)
   searchInput.addEventListener("keydown", handleKeydown)
-  categoryFilterDropdown.addEventListener("keydown", handleClick)
-  categoryFilterApplyBtn.addEventListener("keydown", handleClick)
 
   // setup dynamic update triggers
 
