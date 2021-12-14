@@ -2,12 +2,12 @@
 // @name        Better Bay - Research
 // @description Better controls in seller hub research
 // @namespace   https://github.com/geotrev/better-bay
-// @version     1.0.16-beta.1
 // @author      George Treviranus
 // @run-at      document-idle
 // @match       https://www.ebay.com/sh/research*
-// @downloadURL https://github.com/geotrev/better-bay/raw/develop/dist/research-beta.user.js
-// @updateURL   https://github.com/geotrev/better-bay/raw/develop/dist/research-beta.user.js
+// @version     1.0.16-beta.0
+// @downloadURL https://github.com/geotrev/better-bay/raw/develop/dist/research-development.user.js
+// @updateURL   https://github.com/geotrev/better-bay/raw/develop/dist/research-development.user.js
 // @grant       none
 // ==/UserScript==
 (function () {
