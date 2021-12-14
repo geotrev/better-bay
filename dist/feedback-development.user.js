@@ -2,12 +2,12 @@
 // @name        Better Bay - Feedback
 // @description Automate feedback on ebay
 // @namespace   https://github.com/geotrev/better-bay
-// @version     1.0.16-beta.1
 // @author      George Treviranus
 // @run-at      document-idle
 // @match       https://www.ebay.com/fdbk/leave_feedback*
-// @downloadURL https://github.com/geotrev/better-bay/raw/develop/dist/feedback-beta.user.js
-// @updateURL   https://github.com/geotrev/better-bay/raw/develop/dist/feedback-beta.user.js
+// @version     1.0.16-beta.0
+// @downloadURL https://github.com/geotrev/better-bay/raw/develop/dist/feedback-development.user.js
+// @updateURL   https://github.com/geotrev/better-bay/raw/develop/dist/feedback-development.user.js
 // @grant       none
 // ==/UserScript==
 (function () {

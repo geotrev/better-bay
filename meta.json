@@ -1,7 +1,0 @@
-{
-  "version": "1.0.15",
-  "author": "George Treviranus",
-  "namespace": "https://github.com/geotrev/better-bay",
-  "run-at": "document-idle",
-  "grant": "none"
-}
