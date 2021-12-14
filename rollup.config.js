@@ -4,6 +4,7 @@ import glob from "glob"
 import path from "path"
 import fs from "fs"
 import pkg from "./package.json"
+import metaVersions from "./meta-versions.json"
 
 const repoRootUrl = pkg.repository.url.slice(4, -4)
 const scriptSources = glob.sync(path.resolve("src/!(utils)"))
@@ -13,7 +14,7 @@ function getScriptUrl(name) {
 }
 
 function getBetaScriptUrl(name) {
-  return `${repoRootUrl}/raw/develop/dist/${name}-beta.user.js`
+  return `${repoRootUrl}/raw/develop/dist/${name}-development.user.js`
 }
 
 /**
@@ -28,7 +29,7 @@ export default scriptSources.reduce((configs, sourcePath) => {
   const pathParts = sourcePath.split("/")
   const name = pathParts[pathParts.length - 1]
   const standardFile = path.resolve(`dist/${name}.user.js`)
-  const betaFile = path.resolve(`dist/${name}-beta.user.js`)
+  const betaFile = path.resolve(`dist/${name}-development.user.js`)
   const input = `${sourcePath}/index.js`
 
   const metaPath = `${sourcePath}/meta.json`
@@ -50,9 +51,10 @@ export default scriptSources.reduce((configs, sourcePath) => {
           format: "iife",
           plugins: [
             metablock({
-              file: path.resolve("./meta.json"),
+              file: path.resolve("./meta-common.json"),
               override: {
                 ...metaOverride,
+                version: metaVersions.main,
                 downloadURL: scriptUrl,
                 updateURL: scriptUrl,
               },
@@ -85,9 +87,10 @@ export default scriptSources.reduce((configs, sourcePath) => {
           generatedCode: { compact: false },
           plugins: [
             metablock({
-              file: path.resolve("./meta-beta.json"),
+              file: path.resolve("./meta-common.json"),
               override: {
                 ...metaOverride,
+                version: metaVersions.development,
                 downloadURL: betaScriptUrl,
                 updateURL: betaScriptUrl,
               },
