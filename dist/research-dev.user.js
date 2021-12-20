@@ -5,7 +5,7 @@
 // @author      George Treviranus
 // @run-at      document-idle
 // @match       https://www.ebay.com/sh/research*
-// @version     1.0.16-beta.2
+// @version     1.0.16-beta.3
 // @downloadURL https://github.com/geotrev/better-bay/raw/develop/dist/research-dev.user.js
 // @updateURL   https://github.com/geotrev/better-bay/raw/develop/dist/research-dev.user.js
 // @grant       none
@@ -63,12 +63,13 @@
 
   const notify = new Notify();
 
-  async function load(callback, failMsg, timing) {
-    const { tries = 50, interval = 100 } = timing;
+  async function load(callback, failMsg, timing = {}) {
+    const tries = timing.tries || 50;
+    const interval = timing.interval || 100;
     const defaultFailMsg =
       "Unable to resolve value after," + String(tries * interval) + "ms.";
 
-    return await new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       let i;
       const int = setInterval(() => {
         const value = callback();

@@ -1,11 +1,12 @@
 import { notify } from "./notify.js"
 
-export async function load(callback, failMsg, timing) {
-  const { tries = 50, interval = 100 } = timing
+export async function load(callback, failMsg, timing = {}) {
+  const tries = timing.tries || 50
+  const interval = timing.interval || 100
   const defaultFailMsg =
     "Unable to resolve value after," + String(tries * interval) + "ms."
 
-  return await new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     let i
     const int = setInterval(() => {
       const value = callback()
