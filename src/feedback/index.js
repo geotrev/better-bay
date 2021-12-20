@@ -36,12 +36,12 @@ function applyFeedback(event) {
 
   if (length === 0) {
     RUNNING_PROCESS = false
-    return notify.trigger({
+    return notify({
       content: Messages.NO_FEEDBACK,
     })
   }
 
-  notify.trigger({ content: Messages.FILLING_FEEDBACK })
+  notify({ content: Messages.FILLING_FEEDBACK })
 
   function enableSubmit(target) {
     target.dispatchEvent(new Event("blur"))
@@ -142,7 +142,7 @@ function applyFeedback(event) {
   }
 
   if (PURCHASE_FB_COUNT > 0) {
-    notify.trigger({
+    notify({
       content: `Feedback completed for ${PURCHASE_FB_COUNT} ${pluralize(
         "seller",
         PURCHASE_FB_COUNT
@@ -151,7 +151,7 @@ function applyFeedback(event) {
   }
 
   if (SALE_FB_COUNT > 0) {
-    notify.trigger({
+    notify({
       content: `Feedback completed for ${SALE_FB_COUNT} ${pluralize(
         "buyer",
         SALE_FB_COUNT
@@ -164,7 +164,7 @@ function applyFeedback(event) {
 }
 
 function init() {
-  notify.trigger({
+  notify({
     content: Messages.HOW_TO,
   })
   document.addEventListener("keydown", applyFeedback)
