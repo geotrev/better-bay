@@ -14,7 +14,7 @@ function getScriptUrl(name) {
 }
 
 function getBetaScriptUrl(name) {
-  return `${repoRootUrl}/raw/develop/dist/${name}-development.user.js`
+  return `${repoRootUrl}/raw/develop/dist/${name}-dev.user.js`
 }
 
 /**
@@ -29,7 +29,7 @@ export default scriptSources.reduce((configs, sourcePath) => {
   const pathParts = sourcePath.split("/")
   const name = pathParts[pathParts.length - 1]
   const standardFile = path.resolve(`dist/${name}.user.js`)
-  const betaFile = path.resolve(`dist/${name}-development.user.js`)
+  const betaFile = path.resolve(`dist/${name}-dev.user.js`)
   const input = `${sourcePath}/index.js`
 
   const metaPath = `${sourcePath}/meta.json`
@@ -90,7 +90,7 @@ export default scriptSources.reduce((configs, sourcePath) => {
               file: path.resolve("./meta-common.json"),
               override: {
                 ...metaOverride,
-                version: metaVersions.development,
+                version: metaVersions.develop,
                 downloadURL: betaScriptUrl,
                 updateURL: betaScriptUrl,
               },
