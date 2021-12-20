@@ -14,7 +14,7 @@ import {
 let dynamicTargets = []
 
 function upgradeSoldTable() {
-  notify.trigger({
+  notify({
     content: Messages.TABLE_UPGRADED,
   })
 
@@ -86,7 +86,7 @@ async function addDynamicTargetListeners() {
 }
 
 async function init() {
-  notify.trigger({
+  notify({
     content: Messages.PLUGIN_ACTIVATED,
   })
 
