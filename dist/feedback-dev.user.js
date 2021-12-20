@@ -5,9 +5,9 @@
 // @author      George Treviranus
 // @run-at      document-idle
 // @match       https://www.ebay.com/fdbk/leave_feedback*
-// @version     1.0.16-beta.1
-// @downloadURL https://github.com/geotrev/better-bay/raw/develop/dist/feedback-development.user.js
-// @updateURL   https://github.com/geotrev/better-bay/raw/develop/dist/feedback-development.user.js
+// @version     1.0.16-beta.2
+// @downloadURL https://github.com/geotrev/better-bay/raw/develop/dist/feedback-dev.user.js
+// @updateURL   https://github.com/geotrev/better-bay/raw/develop/dist/feedback-dev.user.js
 // @grant       none
 // ==/UserScript==
 (function () {

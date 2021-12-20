@@ -1,8 +1,9 @@
 import { notify } from "./notify.js"
 
-export async function load(callback, failMsg, { tries = 50, interval = 100 }) {
+export async function load(callback, failMsg, timing) {
+  const { tries = 50, interval = 100 } = timing
   const defaultFailMsg =
-    "Unable to resolve value after " + tries * interval + "ms."
+    "Unable to resolve value after," + String(tries * interval) + "ms."
 
   return await new Promise((resolve, reject) => {
     let i
