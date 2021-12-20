@@ -11,6 +11,29 @@ function pluralize(word, count) {
   return count > 1 ? word + "s" : word
 }
 
+function blurTarget(target) {
+  target.dispatchEvent(new Event("blur"))
+}
+
+function clickItemTarget(item, selector) {
+  const target = item.querySelector(selector)
+  if (target) target.click()
+}
+
+function fillTextField(item, selector, feedbackText) {
+  const overallExpEl = item.querySelector(selector)
+  if (overallExpEl) {
+    overallExpEl.value = feedbackText
+    blurTarget(overallExpEl)
+  }
+}
+
+function notifyCompleted(word, count) {
+  notify({
+    content: `Feedback completed for ${count} ${pluralize(word, count)}.`,
+  })
+}
+
 /**
  * SCRIPT
  */
@@ -36,74 +59,58 @@ function applyFeedback(event) {
 
   if (length === 0) {
     RUNNING_PROCESS = false
-    return notify({
-      content: Messages.NO_FEEDBACK,
-    })
+    return notify({ content: Messages.NO_FEEDBACK })
   }
 
   notify({ content: Messages.FILLING_FEEDBACK })
 
-  function enableSubmit(target) {
-    target.dispatchEvent(new Event("blur"))
-  }
-
-  for (let i = 0; i < length; i++) {
-    const item = items[i]
-
+  for (const item of items) {
     if (item.textContent.indexOf("Sold By") > -1) {
       /**
        * Apply on time delivery
        */
 
-      const onTimeInput = item.querySelector(StaticTargetSelectors.ON_TIME_DEL)
-      if (onTimeInput) onTimeInput.click()
+      clickItemTarget(item, StaticTargetSelectors.ON_TIME_DEL)
 
       /**
        * Apply review type
        */
 
-      const reviewTypeInput = item.querySelector(
-        StaticTargetSelectors.OVERALL_EXP
-      )
-      if (reviewTypeInput) reviewTypeInput.click()
+      clickItemTarget(item, StaticTargetSelectors.OVERALL_EXP)
 
       /**
        * Apply star ratings
        */
 
-      // item description
-      const itemDescStar = item.querySelector(
-        StaticTargetSelectors.ITEM_AS_DESC
-      )
-      if (itemDescStar) itemDescStar.click()
+      clickItemTarget(item, StaticTargetSelectors.ITEM_AS_DESC)
 
-      // shipping costs
-      const shipCostStar = item.querySelector(
-        StaticTargetSelectors.SHIP_CHARGES
-      )
-      if (shipCostStar) shipCostStar.click()
+      /**
+       * Apply ship charge
+       */
 
-      // shipping time
-      const shipTimeStar = item.querySelector(StaticTargetSelectors.SHIP_TIME)
-      if (shipTimeStar) shipTimeStar.click()
+      clickItemTarget(item, StaticTargetSelectors.SHIP_CHARGES)
 
-      // seller communication
-      const sellCommStar = item.querySelector(
-        StaticTargetSelectors.SELLER_COMMS
-      )
-      if (sellCommStar) sellCommStar.click()
+      /**
+       * Apply ship time
+       */
+
+      clickItemTarget(item, StaticTargetSelectors.SHIP_TIME)
+
+      /**
+       * Apply seller comms
+       */
+
+      clickItemTarget(item, StaticTargetSelectors.SELLER_COMMS)
 
       /**
        * Fill in review text
        */
 
-      const overallExpEl = item.querySelector(
-        StaticTargetSelectors.EXP_COMMENT_TA
+      fillTextField(
+        item,
+        StaticTargetSelectors.EXP_COMMENT_TA,
+        PluginConfig.PURCHASE_FEEDBACK_TEXT
       )
-      if (overallExpEl) {
-        overallExpEl.value = PluginConfig.PURCHASE_FEEDBACK_TEXT
-        enableSubmit(overallExpEl)
-      }
 
       PURCHASE_FB_COUNT += 1
     } else if (item.textContent.indexOf("Purchased by") > -1) {
@@ -111,22 +118,17 @@ function applyFeedback(event) {
        * Apply review type
        */
 
-      const reviewTypeInput = item.querySelector(
-        StaticTargetSelectors.OVERALL_EXP
-      )
-      if (reviewTypeInput) reviewTypeInput.click()
+      clickItemTarget(item, StaticTargetSelectors.OVERALL_EXP)
 
       /**
        * Fill in review text
        */
 
-      const overallExpEl = item.querySelector(
-        StaticTargetSelectors.EXP_COMMENT_IN
+      fillTextField(
+        item,
+        StaticTargetSelectors.EXP_COMMENT_IN,
+        PluginConfig.SALE_FEEDBACK_TEXT
       )
-      if (overallExpEl) {
-        overallExpEl.value = PluginConfig.SALE_FEEDBACK_TEXT
-        enableSubmit(overallExpEl)
-      }
 
       SALE_FB_COUNT += 1
     }
@@ -142,21 +144,11 @@ function applyFeedback(event) {
   }
 
   if (PURCHASE_FB_COUNT > 0) {
-    notify({
-      content: `Feedback completed for ${PURCHASE_FB_COUNT} ${pluralize(
-        "seller",
-        PURCHASE_FB_COUNT
-      )}.`,
-    })
+    notifyCompleted("seller", PURCHASE_FB_COUNT)
   }
 
   if (SALE_FB_COUNT > 0) {
-    notify({
-      content: `Feedback completed for ${SALE_FB_COUNT} ${pluralize(
-        "buyer",
-        SALE_FB_COUNT
-      )}.`,
-    })
+    notifyCompleted("buyer", SALE_FB_COUNT)
   }
 
   RUNNING_PROCESS = false
@@ -164,9 +156,7 @@ function applyFeedback(event) {
 }
 
 function init() {
-  notify({
-    content: Messages.HOW_TO,
-  })
+  notify({ content: Messages.HOW_TO })
   document.addEventListener("keydown", applyFeedback)
 }
 
