@@ -108,8 +108,6 @@ async function init() {
 
   await tryUpgradeSoldTable()
   await addDynamicTargetListeners()
-
-  // Check if a table exists on load. If so, upgrade it.
 }
 
 init()
