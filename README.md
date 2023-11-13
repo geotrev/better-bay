@@ -11,10 +11,10 @@ Add the [tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dh
 
 ### Feedback Shortcuts
 
-| Key Command                                                                                  | Page                   | Description                                                      |
-| -------------------------------------------------------------------------------------------- | ---------------------- | ---------------------------------------------------------------- |
-| <kbd>⌥</kbd>/<kbd>alt</kbd> + <kbd>shift</kbd> + <kbd>F</kbd>                                | `/fdbk/leave_feedback` | Automatically fill out visible feedback items.                   |
-| <kbd>^</kbd>/<kbd>ctrl</kbd> + <kbd>⌥</kbd>/<kbd>alt</kbd> + <kbd>shift</kbd> + <kbd>F</kbd> | `/fdbk/leave_feedback` | Automatically fill out visible feedback items, but don't submit. |
+| Key Command                                                    | Page                   | Description                                                      |
+| -------------------------------------------------------------- | ---------------------- | ---------------------------------------------------------------- |
+| <kbd>^</kbd>/<kbd>ctrl</kbd> + <kbd>F</kbd>                    | `/fdbk/leave_feedback` | Automatically fill out visible feedback items.                   |
+| <kbd>^</kbd>/<kbd>ctrl</kbd> + <kbd>shift</kbd> + <kbd>F</kbd> | `/fdbk/leave_feedback` | Automatically fill out visible feedback items, but don't submit. |
 
 ### Research Tab (Seller's Hub) Shortcuts
 
