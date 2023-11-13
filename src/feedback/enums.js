@@ -1,5 +1,5 @@
 export const PluginConfig = {
-  DEBUG: false,
+  SUBMIT: false,
   SALE_FEEDBACK_TEXT: "Great buyer + fast payment. Thanks.",
   PURCHASE_FEEDBACK_TEXT: "Easy purchase + item arrived as described. Thanks.",
 }
@@ -21,5 +21,5 @@ export const Messages = {
   NO_FEEDBACK: "No feedback, exiting.",
   FILLING_FEEDBACK: "Filling feedback...",
   HOW_TO:
-    "Plugin activated! Press Alt+Shift+F to fill and submit all feedback, or Ctrl+Alt+Shift+F to fill (but not submit) feedback.",
+    "Better Bay activated! Press Ctrl+Shift+F to fill all feedback OR Ctrl+Shift+Alt+F to fill & submit feedback.",
 }

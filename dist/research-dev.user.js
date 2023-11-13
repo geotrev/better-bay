@@ -5,7 +5,7 @@
 // @author      George Treviranus
 // @run-at      document-idle
 // @match       https://www.ebay.com/sh/research*
-// @version     2.0.0-beta.0
+// @version     2.0.0-beta.1
 // @downloadURL https://github.com/geotrev/better-bay/raw/develop/dist/research-dev.user.js
 // @updateURL   https://github.com/geotrev/better-bay/raw/develop/dist/research-dev.user.js
 // @grant       none

@@ -5,7 +5,7 @@
 // @author      George Treviranus
 // @run-at      document-idle
 // @match       https://www.ebay.com/fdbk/leave_feedback*
-// @version     2.0.0-beta.0
+// @version     2.0.0-beta.1
 // @downloadURL https://github.com/geotrev/better-bay/raw/develop/dist/feedback-dev.user.js
 // @updateURL   https://github.com/geotrev/better-bay/raw/develop/dist/feedback-dev.user.js
 // @grant       none
@@ -64,7 +64,7 @@
   const notify = new Notify();
 
   const PluginConfig = {
-    DEBUG: false,
+    SUBMIT: false,
     SALE_FEEDBACK_TEXT: "Great buyer + fast payment. Thanks.",
     PURCHASE_FEEDBACK_TEXT: "Easy purchase + item arrived as described. Thanks.",
   };
@@ -86,7 +86,7 @@
     NO_FEEDBACK: "No feedback, exiting.",
     FILLING_FEEDBACK: "Filling feedback...",
     HOW_TO:
-      "Plugin activated! Press Alt+Shift+F to fill and submit all feedback, or Ctrl+Alt+Shift+F to fill (but not submit) feedback.",
+      "Better Bay activated! Press Ctrl+Shift+F to fill all feedback OR Ctrl+Shift+Alt+F to fill & submit feedback.",
   };
 
   let RUNNING_PROCESS = false;
@@ -131,13 +131,13 @@
       !window.location.pathname.startsWith("/fdbk/leave_feedback") ||
       RUNNING_PROCESS ||
       !["f", "F"].includes(event.key) ||
-      !event.altKey ||
+      !event.ctrlKey ||
       !event.shiftKey
     ) {
       return
     }
 
-    if (event.ctrlKey) PluginConfig.DEBUG = true;
+    if (event.altKey) PluginConfig.SUBMIT = true;
     RUNNING_PROCESS = true;
 
     let PURCHASE_FB_COUNT = 0;
@@ -222,7 +222,7 @@
       }
     }
 
-    if (!PluginConfig.DEBUG) {
+    if (PluginConfig.SUBMIT) {
       const submitBtns = document.querySelectorAll(
         StaticTargetSelectors.SUBMIT_BTN
       );
@@ -240,7 +240,7 @@
     }
 
     RUNNING_PROCESS = false;
-    PluginConfig.DEBUG = false;
+    PluginConfig.SUBMIT = false;
   }
 
   function init() {

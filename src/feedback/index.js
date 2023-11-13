@@ -43,13 +43,13 @@ function applyFeedback(event) {
     !window.location.pathname.startsWith("/fdbk/leave_feedback") ||
     RUNNING_PROCESS ||
     !["f", "F"].includes(event.key) ||
-    !event.altKey ||
+    !event.ctrlKey ||
     !event.shiftKey
   ) {
     return
   }
 
-  if (event.ctrlKey) PluginConfig.DEBUG = true
+  if (event.altKey) PluginConfig.SUBMIT = true
   RUNNING_PROCESS = true
 
   let PURCHASE_FB_COUNT = 0
@@ -134,7 +134,7 @@ function applyFeedback(event) {
     }
   }
 
-  if (!PluginConfig.DEBUG) {
+  if (PluginConfig.SUBMIT) {
     const submitBtns = document.querySelectorAll(
       StaticTargetSelectors.SUBMIT_BTN
     )
@@ -152,7 +152,7 @@ function applyFeedback(event) {
   }
 
   RUNNING_PROCESS = false
-  PluginConfig.DEBUG = false
+  PluginConfig.SUBMIT = false
 }
 
 function init() {
