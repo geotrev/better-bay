@@ -1,5 +1,5 @@
 import metablock from "rollup-plugin-userscript-metablock"
-import { terser } from "rollup-plugin-terser"
+import terser from "@rollup/plugin-terser"
 import glob from "glob"
 import path from "path"
 import fs from "fs"
@@ -28,8 +28,8 @@ function getBetaScriptUrl(name) {
 export default scriptSources.reduce((configs, sourcePath) => {
   const pathParts = sourcePath.split("/")
   const name = pathParts[pathParts.length - 1]
-  const standardFile = path.resolve(`dist/${name}.user.js`)
-  const betaFile = path.resolve(`dist/${name}-dev.user.js`)
+  const standardFile = path.resolve(process.cwd(), `dist/${name}.user.js`)
+  const betaFile = path.resolve(process.cwd(), `dist/${name}-dev.user.js`)
   const input = `${sourcePath}/index.js`
 
   const metaPath = `${sourcePath}/meta.json`
@@ -51,7 +51,7 @@ export default scriptSources.reduce((configs, sourcePath) => {
           format: "iife",
           plugins: [
             metablock({
-              file: path.resolve("./meta-common.json"),
+              file: path.resolve(process.cwd(), "./meta-common.json"),
               override: {
                 ...metaOverride,
                 version: metaVersions.main,
